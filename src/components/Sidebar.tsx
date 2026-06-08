@@ -26,7 +26,7 @@ function NavRow({ icon, label, trailing }: NavRowProps) {
   );
 }
 
-export function Sidebar() {
+export function Sidebar({ appName }: { appName: string }) {
   const iconCls = 'text-text-white';
   return (
     <aside className="flex h-screen w-[248px] shrink-0 flex-col bg-bg-sidebar px-2 py-6">
@@ -48,7 +48,7 @@ export function Sidebar() {
                 className="size-6 rounded-full object-cover ring-1 ring-white/20"
               />
             }
-            label="Safia Work"
+            label={appName}
             trailing={<ChevronDown size={24} className="text-text-white" />}
           />
           <div className="flex flex-col gap-3">
