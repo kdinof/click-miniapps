@@ -1,0 +1,20 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+.design-refs
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# Local Netlify folder
+.netlify
+
+# Local Claude settings (contains secrets)
+.claude/settings.local.json
+
+# TypeScript incremental build cache
+*.tsbuildinfo

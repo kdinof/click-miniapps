@@ -1,0 +1,120 @@
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------------
+   Euclid Circular A — fonts served from /public/fonts
+--------------------------------------------------------------------------- */
+@font-face {
+  font-family: 'Euclid Circular A';
+  src: url('/fonts/EuclidCircularA-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Euclid Circular A';
+  src: url('/fonts/EuclidCircularA-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Euclid Circular A';
+  src: url('/fonts/EuclidCircularA-Semibold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Euclid Circular A';
+  src: url('/fonts/EuclidCircularA-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------------------------------------------------------------------------
+   Design tokens — source of truth: Figma "Click-MiniApps" variables
+--------------------------------------------------------------------------- */
+@theme {
+  --font-sans:
+    'Euclid Circular A', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    sans-serif;
+
+  /* Text */
+  --color-text-primary: #141414;
+  --color-text-secondary: #76787a;
+  --color-text-tertiary: #b0b4b8;
+  --color-text-disabled: #c4c8cc;
+  --color-text-white: #ffffff;
+
+  /* Backgrounds */
+  --color-bg-island: #ffffff;
+  --color-bg-ocean: #ebf0f5;
+  --color-bg-light-blue: #f5f9ff;
+  --color-bg-sidebar: #15161a;
+  --color-bg-control: #e2e3e8;
+  --color-bg-control-muted: rgba(226, 227, 232, 0.4);
+  --color-bg-subtle: #f2f3f5;
+
+  /* Borders */
+  --color-border: #e3e6ea;
+
+  /* Accent / brand */
+  --color-accent: #0077ff;
+  --color-accent-hover: #0a6ae0;
+  --color-violet: #6600ff;
+
+  /* States */
+  --color-error: #e84c4e;
+
+  /* Badges */
+  --color-badge-bg: rgba(197, 210, 224, 0.24);
+  --color-badge-violet-bg: rgba(157, 92, 255, 0.16);
+
+  /* Radii */
+  --radius-button: 8px;
+  --radius-card: 12px;
+  --radius-island: 16px;
+
+  /* Animations */
+  --animate-fade-in: fade-in 0.4s ease-out;
+
+  /* Typography scale (rendered sizes from Figma) */
+  --text-h1: 28px;
+  --text-h1--line-height: 36px;
+  --text-h1--font-weight: 600;
+  --text-h2: 22.5px;
+  --text-h2--line-height: 28px;
+  --text-h2--font-weight: 600;
+  --text-body: 17px;
+  --text-body--line-height: 22px;
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 18px;
+  --text-menu: 12.5px;
+  --text-menu--line-height: 16px;
+  --text-badge: 12px;
+  --text-badge--line-height: 16px;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--color-text-primary);
+}
