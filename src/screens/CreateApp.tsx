@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { OnboardingLayout } from '@/components/OnboardingLayout';
 import { Button } from '@/components/Button';
 
-export function CreateApp({ onCreate }: { onCreate: () => void }) {
+export function CreateApp({ onCreate }: { onCreate: (name: string) => void }) {
   const [name, setName] = useState('');
 
   return (
@@ -30,7 +30,7 @@ export function CreateApp({ onCreate }: { onCreate: () => void }) {
               className="h-11 rounded-button border border-bg-ocean bg-bg-island px-3 text-body text-text-primary outline-none transition-colors placeholder:text-text-secondary hover:bg-bg-ocean focus:border-accent focus:bg-bg-island"
             />
           </div>
-          <Button className="w-full" disabled={!name.trim()} onClick={onCreate}>
+          <Button className="w-full" disabled={!name.trim()} onClick={() => onCreate(name.trim())}>
             Создать рабочее пространство
           </Button>
         </div>
