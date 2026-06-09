@@ -60,7 +60,6 @@ function getStatuses(state: State): StepStatus[] {
 function Dashboard({ appName }: { appName: string }) {
   const { state, dispatch } = useDashboard();
   const steps = STEP_LABELS.map((label, i) => ({ label, status: getStatuses(state)[i] }));
-  const moderationPrimary = state.tab === 'dev' && state.dev === 'configured';
   const canModerate = state.infoSaved && state.contractSigned;
 
   const [ready, setReady] = useState(false);
