@@ -35,6 +35,10 @@ export function Sidebar({ appName }: { appName: string }) {
           src="/assets/logo.png"
           alt="Click MiniApps"
           className="h-[18px] w-[136px]"
+          onError={(e) => {
+            e.currentTarget.src = '/assets/logo-placeholder.png';
+            e.currentTarget.className = 'h-9 w-9 opacity-40';
+          }}
         />
       </div>
 
@@ -43,9 +47,12 @@ export function Sidebar({ appName }: { appName: string }) {
           <NavRow
             icon={
               <img
-                src="/assets/avatar.png"
+                src="/assets/logo-placeholder.png"
                 alt=""
                 className="size-6 rounded-full object-cover ring-1 ring-white/20"
+                onError={(e) => {
+                  e.currentTarget.src = '/assets/logo-placeholder.png';
+                }}
               />
             }
             label={appName}

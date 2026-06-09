@@ -9,6 +9,7 @@ import { ContractTab } from '@/screens/ContractTab';
 import { InfoTab } from '@/screens/InfoTab';
 import { SuccessModal } from '@/screens/SuccessModal';
 import { OptionsModal } from '@/screens/OptionsModal';
+import { CongratulationsModal } from '@/screens/CongratulationsModal';
 import { Register } from '@/screens/Register';
 import { CreateApp } from '@/screens/CreateApp';
 import { DashboardProvider, useDashboard, type State, type Tab } from '@/state/dashboard';
@@ -28,7 +29,7 @@ const TABS = [
 ];
 
 function getStatuses(state: State): StepStatus[] {
-  const { dev, config, contractPhone, contractSent } = state;
+  const { dev, config, contractPhone, contractSent, infoSaved, tab } = state;
 
   const sandbox: StepStatus = 'done';
 
@@ -43,17 +44,24 @@ function getStatuses(state: State): StepStatus[] {
 
   const contract: StepStatus = contractSent
     ? 'done'
-    : contractPhone.trim() !== ''
+    : tab === 'contract' || contractPhone.trim() !== ''
       ? 'current'
       : 'pending';
 
-  return [sandbox, testLaunch, contract, 'pending', 'pending'];
+  const info: StepStatus = infoSaved
+    ? 'done'
+    : tab === 'info'
+      ? 'current'
+      : 'pending';
+
+  return [sandbox, testLaunch, contract, info, 'pending'];
 }
 
 function Dashboard({ appName }: { appName: string }) {
   const { state, dispatch } = useDashboard();
   const steps = STEP_LABELS.map((label, i) => ({ label, status: getStatuses(state)[i] }));
   const moderationPrimary = state.tab === 'dev' && state.dev === 'configured';
+  const canModerate = state.infoSaved && state.contractSigned;
 
   const [ready, setReady] = useState(false);
   useEffect(() => {
@@ -72,7 +80,12 @@ function Dashboard({ appName }: { appName: string }) {
               <h1 className="text-[48px] leading-[48px] font-semibold text-text-primary">
                 Новый МиниАпп
               </h1>
-              <Button variant={moderationPrimary ? 'primary' : 'secondary'} className="w-[255px]">
+              <Button
+                variant={canModerate ? 'primary' : 'secondary'}
+                className="w-[255px]"
+                disabled={!canModerate}
+                onClick={() => dispatch({ type: 'SEND_TO_MODERATION' })}
+              >
                 Отправить на модерацию
               </Button>
             </div>
@@ -101,6 +114,7 @@ function Dashboard({ appName }: { appName: string }) {
       )}
       {state.modal === 'success' && <SuccessModal />}
       {state.modal === 'options' && <OptionsModal />}
+      {state.modal === 'congratulations' && <CongratulationsModal />}
     </div>
   );
 }

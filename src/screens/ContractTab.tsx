@@ -50,7 +50,21 @@ export function ContractTab() {
       <div className="relative overflow-hidden rounded-island bg-bg-island px-9 py-12">
         <HeroGlow />
         <div className="relative flex flex-col items-center gap-4">
-          {state.contractSent ? (
+          {state.contractSigned ? (
+            <>
+              <CheckCircle2 size={40} className="text-accent" />
+              <h2 className="text-center text-h1 text-text-primary">
+                Вы уже подписали договор!
+              </h2>
+              <p className="max-w-[560px] text-center text-body text-text-secondary">
+                Ваш договор готов для получения MerchantId для авторизации. Вы можете перейти
+                к настройке и настроить интеграцию в Click Super App.
+              </p>
+              <Button className="mt-2 w-[220px]" onClick={() => dispatch({ type: 'SET_TAB', tab: 'info' })}>
+                Перейти к интеграции
+              </Button>
+            </>
+          ) : state.contractSent ? (
             <>
               <CheckCircle2 size={40} className="text-accent" />
               <h2 className="text-center text-h1 text-text-primary">
@@ -60,7 +74,9 @@ export function ContractTab() {
                 Мы свяжемся с вами для заключения договора на размещение МиниАппа. Когда
                 договор будет оформлен, проверьте статус подключения.
               </p>
-              <Button className="mt-2 w-[200px]">Проверить статус</Button>
+              <Button className="mt-2 w-[200px]" onClick={() => dispatch({ type: 'CHECK_CONTRACT_STATUS' })}>
+                Проверить статус
+              </Button>
             </>
           ) : (
             <>
