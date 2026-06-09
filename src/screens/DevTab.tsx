@@ -3,7 +3,6 @@ import {
   AppWindow,
   Sparkles,
   FileText,
-  Info,
   Rocket,
   ChevronLeft,
   X,
@@ -135,7 +134,7 @@ function AICard() {
 function InfoBanner() {
   return (
     <div className="flex items-start gap-4 rounded-island bg-bg-island px-6 py-3">
-      <Info size={24} className="shrink-0 text-text-primary" />
+      <img src="/assets/info-icon.svg" alt="" className="mt-0.5 size-5 shrink-0" />
       <div className="flex flex-col">
         <p className="text-body font-semibold text-text-primary">Нужно подписать договор</p>
         <p className="text-body text-text-secondary">

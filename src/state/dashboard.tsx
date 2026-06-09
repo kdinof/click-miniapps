@@ -10,13 +10,15 @@ export const TOKEN_LINK = 'https://miniapps/app1234567#screen=profile&ref=99';
 
 export type Tab = 'dev' | 'contract' | 'info';
 export type DevState = 'initial' | 'tokenGenerated' | 'configuring' | 'configured';
-export type ModalType = null | 'success' | 'options';
+export type ModalType = null | 'success' | 'options' | 'congratulations';
 
 export interface State {
   tab: Tab;
   dev: DevState;
   contractPhone: string;
   contractSent: boolean;
+  contractSigned: boolean;
+  infoSaved: boolean;
   modal: ModalType;
   toast: boolean;
   config: { subdomain: string; phones: string[] };
@@ -27,6 +29,8 @@ const initialState: State = {
   dev: 'initial',
   contractPhone: '',
   contractSent: false,
+  contractSigned: false,
+  infoSaved: false,
   modal: null,
   toast: false,
   config: {
@@ -52,7 +56,10 @@ export type Action =
   | { type: 'OPEN_OPTIONS' }
   | { type: 'CLOSE_MODAL' }
   | { type: 'SET_CONTRACT_PHONE'; value: string }
-  | { type: 'SUBMIT_CONTRACT' };
+  | { type: 'SUBMIT_CONTRACT' }
+  | { type: 'CHECK_CONTRACT_STATUS' }
+  | { type: 'SAVE_INFO' }
+  | { type: 'SEND_TO_MODERATION' };
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -114,6 +121,12 @@ function reducer(state: State, action: Action): State {
       return { ...state, contractPhone: action.value };
     case 'SUBMIT_CONTRACT':
       return { ...state, contractSent: true };
+    case 'CHECK_CONTRACT_STATUS':
+      return { ...state, contractSigned: true };
+    case 'SAVE_INFO':
+      return { ...state, infoSaved: true };
+    case 'SEND_TO_MODERATION':
+      return { ...state, modal: 'congratulations' };
     default:
       return state;
   }
