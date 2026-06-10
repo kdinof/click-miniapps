@@ -9,7 +9,6 @@ import {
   Trash2,
 } from 'lucide-react';
 import { Button } from '@/components/Button';
-import { Link } from '@/components/Link';
 import { Badge } from '@/components/Badge';
 import { TextField } from '@/components/TextField';
 import { CopyButton } from '@/components/CopyButton';
@@ -132,7 +131,7 @@ function InfoBanner() {
     <div className="flex items-start gap-4 rounded-island bg-bg-island px-6 py-3">
       <img src="/assets/info-icon.svg" alt="" className="mt-0.5 size-5 shrink-0" />
       <div className="flex flex-col">
-        <p className="text-body font-semibold text-text-primary">Нужно подписать договор</p>
+        <p className="text-body font-semibold text-text-primary">Убедитесь, что договор подписан</p>
         <p className="text-body text-text-secondary">
           Полный запуск станет доступен после подписания договора и прохождения модерации
         </p>
