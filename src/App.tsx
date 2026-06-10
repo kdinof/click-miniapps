@@ -13,6 +13,7 @@ import { CongratulationsModal } from '@/screens/CongratulationsModal';
 import { Register } from '@/screens/Register';
 import { CreateApp } from '@/screens/CreateApp';
 import { DashboardProvider, useDashboard, type State, type Tab } from '@/state/dashboard';
+import { InfoFormProvider } from '@/state/infoForm';
 
 const STEP_LABELS = [
   'Доступ\nк sandbox',
@@ -138,7 +139,9 @@ export default function App() {
 
   return (
     <DashboardProvider>
-      <Dashboard appName={appName} />
+      <InfoFormProvider>
+        <Dashboard appName={appName} />
+      </InfoFormProvider>
     </DashboardProvider>
   );
 }
