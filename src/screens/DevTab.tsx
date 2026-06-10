@@ -13,6 +13,7 @@ import { Badge } from '@/components/Badge';
 import { TextField } from '@/components/TextField';
 import { CopyButton } from '@/components/CopyButton';
 import { useDashboard, TOKEN_LINK } from '@/state/dashboard';
+import { DEVELOPER_DOCS_URL } from '@/lib/links';
 
 /* --------------------------------- Glow --------------------------------- */
 function Glow() {
@@ -85,7 +86,7 @@ function LaunchBlock() {
 /* ------------------------------ Dev cards ------------------------------- */
 function SandboxCard() {
   return (
-    <button type="button" className="flex flex-1 cursor-pointer flex-col gap-5 rounded-island bg-bg-island p-6 text-left transition-colors hover:bg-[#EBF0F5] active:bg-[#EBF0F5]">
+    <a href={DEVELOPER_DOCS_URL} target="_blank" rel="noopener noreferrer" className="flex flex-1 cursor-pointer flex-col gap-5 rounded-island bg-bg-island p-6 text-left transition-colors hover:bg-[#EBF0F5] active:bg-[#EBF0F5]">
       <div className="flex flex-col gap-4">
         <Box size={24} className="text-text-primary" />
         <div className="flex flex-col gap-1">
@@ -99,7 +100,7 @@ function SandboxCard() {
           </p>
         </div>
       </div>
-    </button>
+    </a>
   );
 }
 
@@ -174,7 +175,7 @@ function ConfigPage() {
         <p className="text-body-sm text-text-secondary">
           Введите сабдомен в формате: click.названиеминиаппа.uz. на котором будет
           открываться тестовая версия Mini App. Он должен быть добавлен и настроен заранее.{' '}
-          <span className="cursor-pointer text-accent">Как получить и настроить сабдомен.</span>
+          <a href={DEVELOPER_DOCS_URL} target="_blank" rel="noopener noreferrer" className="cursor-pointer text-accent">Как получить и настроить сабдомен.</a>
         </p>
         <TextField
           placeholder="https://www.sabdomenov.net/..."

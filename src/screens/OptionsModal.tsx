@@ -3,6 +3,7 @@ import { Sparkles, Puzzle, Users, Layers } from 'lucide-react';
 import { Modal } from '@/components/Modal';
 import { Button } from '@/components/Button';
 import { useDashboard } from '@/state/dashboard';
+import { DEVELOPER_DOCS_URL } from '@/lib/links';
 
 interface Option {
   icon: ReactNode;
@@ -10,6 +11,7 @@ interface Option {
   title: string;
   text: string;
   action: string;
+  href?: string;
 }
 
 const options: Option[] = [
@@ -26,6 +28,7 @@ const options: Option[] = [
     title: 'Самостоятельная разработка',
     text: 'Для тех, кто хочет создать свой Миниапп. Вы разрабатываете Миниапп сами, а мы даём документацию для интеграции',
     action: 'Документация',
+    href: DEVELOPER_DOCS_URL,
   },
   {
     icon: <Users size={24} />,
@@ -40,6 +43,7 @@ const options: Option[] = [
     title: 'Витрина без разработки',
     text: 'Для тех, кто хочет запуститься бесплатно. Простое и быстрое создание Миниаппа на нашем конструкторе без использования кода',
     action: 'Документация',
+    href: DEVELOPER_DOCS_URL,
   },
 ];
 
@@ -67,7 +71,13 @@ export function OptionsModal() {
               </div>
               <h3 className="text-body font-semibold text-text-primary">{o.title}</h3>
               <p className="flex-1 text-body-sm text-text-secondary">{o.text}</p>
-              <Button variant="secondary" className="w-full">
+              <Button
+                variant="secondary"
+                className="w-full"
+                onClick={
+                  o.href ? () => window.open(o.href, '_blank', 'noopener,noreferrer') : undefined
+                }
+              >
                 {o.action}
               </Button>
             </div>
