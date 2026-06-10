@@ -93,7 +93,7 @@ function SandboxCard() {
           <div>
             <Badge icon={<FileText size={12} />}>.md файлы с инструкциями</Badge>
           </div>
-          <h3 className="text-h2 text-text-primary">Sandbox и документация</h3>
+          <h3 className="text-h2 text-text-primary">Настройте интеграции, используя Sandbox и документацию</h3>
           <p className="text-body-sm text-text-secondary">
             Разработчик может получить доступ к sandbox, изучить документацию и начать
             тестовую интеграцию до завершения полной бизнесовой проверки.
@@ -333,12 +333,9 @@ export function DevTab() {
 
   return (
     <div className="flex flex-col gap-5">
-      <TokenCard variant={tokenVariant} />
-
-      {state.dev === 'tokenGenerated' && <LaunchBlock />}
-
       {state.dev === 'configured' ? (
         <>
+          <TokenCard variant={tokenVariant} />
           <AvailabilityBlock />
           <AvailableUsersTable />
         </>
@@ -348,6 +345,8 @@ export function DevTab() {
             <SandboxCard />
             <AICard />
           </div>
+          <TokenCard variant={tokenVariant} />
+          {state.dev === 'tokenGenerated' && <LaunchBlock />}
           <InfoBanner />
         </>
       )}
