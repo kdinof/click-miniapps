@@ -38,12 +38,12 @@ export function Register({ onContinue }: { onContinue: () => void }) {
               </p>
             </div>
           </div>
-          <div className="flex flex-col gap-3">
-            <Button className="w-full" disabled={!accepted} onClick={onContinue}>
+          <div className="flex flex-col gap-4">
+            <Button variant="secondary" className="w-full bg-[#E1E6EB] disabled:opacity-100 enabled:hover:bg-[#0077FF] enabled:hover:text-white enabled:hover:brightness-100" disabled={!accepted} onClick={onContinue}>
               Продолжить с Google
             </Button>
-            <Button variant="secondary" className="w-full" disabled={!accepted} onClick={onContinue}>
-              Продолжить с Email
+            <Button variant="secondary" className="w-full bg-[#C5D2E0] disabled:opacity-100 enabled:hover:bg-[#0077FF] enabled:hover:text-white enabled:hover:brightness-100" disabled={!accepted} onClick={onContinue}>
+              Продолжить с E-mail
             </Button>
           </div>
         </div>
