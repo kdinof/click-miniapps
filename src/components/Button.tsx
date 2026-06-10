@@ -24,7 +24,7 @@ export function Button({
   return (
     <button
       disabled={disabled}
-      className={`flex h-11 min-w-[126px] items-center justify-center gap-2 rounded-button px-4 text-body font-semibold whitespace-nowrap transition-[background-color,filter] duration-150 disabled:cursor-not-allowed ${variantClasses[variant]} ${className}`}
+      className={`flex h-11 min-w-[126px] items-center justify-center gap-2 rounded-button px-4 font-sans text-[17px] leading-[22px] font-semibold whitespace-nowrap transition-[background-color,filter] duration-150 disabled:cursor-not-allowed ${variantClasses[variant]} ${className}`}
       {...rest}
     >
       {leftIcon}

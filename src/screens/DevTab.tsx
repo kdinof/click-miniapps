@@ -9,11 +9,11 @@ import {
   Trash2,
 } from 'lucide-react';
 import { Button } from '@/components/Button';
-import { Link } from '@/components/Link';
 import { Badge } from '@/components/Badge';
 import { TextField } from '@/components/TextField';
 import { CopyButton } from '@/components/CopyButton';
 import { useDashboard, TOKEN_LINK } from '@/state/dashboard';
+import { DEVELOPER_DOCS_URL } from '@/lib/links';
 
 /* --------------------------------- Glow --------------------------------- */
 function Glow() {
@@ -86,7 +86,7 @@ function LaunchBlock() {
 /* ------------------------------ Dev cards ------------------------------- */
 function SandboxCard() {
   return (
-    <div className="flex flex-1 flex-col gap-5 rounded-island bg-bg-island p-6">
+    <a href={DEVELOPER_DOCS_URL} target="_blank" rel="noopener noreferrer" className="flex flex-1 cursor-pointer flex-col gap-5 rounded-island bg-bg-island p-6 text-left transition-colors hover:bg-[#EBF0F5] active:bg-[#EBF0F5]">
       <div className="flex flex-col gap-4">
         <Box size={24} className="text-text-primary" />
         <div className="flex flex-col gap-1">
@@ -100,15 +100,14 @@ function SandboxCard() {
           </p>
         </div>
       </div>
-      <Link>Перейти</Link>
-    </div>
+    </a>
   );
 }
 
 function AICard() {
   const { dispatch } = useDashboard();
   return (
-    <div className="flex flex-1 flex-col justify-between gap-5 rounded-island bg-bg-island p-6">
+    <button type="button" onClick={() => dispatch({ type: 'OPEN_OPTIONS' })} className="flex flex-1 cursor-pointer flex-col gap-5 rounded-island bg-bg-island p-6 text-left transition-colors hover:bg-[#EBF0F5] active:bg-[#EBF0F5]">
       <div className="flex flex-col gap-4">
         <AppWindow size={24} className="text-text-primary" />
         <div className="flex flex-col gap-1">
@@ -124,10 +123,7 @@ function AICard() {
           </p>
         </div>
       </div>
-      <Link onClick={() => dispatch({ type: 'OPEN_OPTIONS' })}>
-        Посмотреть варианты
-      </Link>
-    </div>
+    </button>
   );
 }
 
@@ -168,7 +164,7 @@ function ConfigPage() {
             App в Click SuperApp.
           </p>
         </div>
-        <Button className="w-[185px]" onClick={() => dispatch({ type: 'LAUNCH' })}>
+        <Button className="w-[235px]" onClick={() => dispatch({ type: 'LAUNCH' })}>
           Запустить МиниАпп
         </Button>
       </div>
@@ -179,7 +175,7 @@ function ConfigPage() {
         <p className="text-body-sm text-text-secondary">
           Введите сабдомен в формате: click.названиеминиаппа.uz. на котором будет
           открываться тестовая версия Mini App. Он должен быть добавлен и настроен заранее.{' '}
-          <span className="cursor-pointer text-accent">Как получить и настроить сабдомен.</span>
+          <a href={DEVELOPER_DOCS_URL} target="_blank" rel="noopener noreferrer" className="cursor-pointer text-accent">Как получить и настроить сабдомен.</a>
         </p>
         <TextField
           placeholder="https://www.sabdomenov.net/..."
@@ -202,7 +198,7 @@ function ConfigPage() {
           </div>
           <Button
             variant="secondary"
-            className="w-[170px] shrink-0"
+            className="w-[235px] shrink-0"
             onClick={() => dispatch({ type: 'ADD_PHONE' })}
           >
             Добавить номер
@@ -252,6 +248,14 @@ const TEST_USERS = [
   'Синицын Леонид',
   'Гаврилов Иван',
 ];
+
+function formatUserName(fullName: string): string {
+  const parts = fullName.trim().split(/\s+/);
+  if (parts.length < 2) return fullName;
+  const firstName = parts[parts.length - 1];
+  const lastInitial = parts[0][0];
+  return `${firstName} ${lastInitial}.`;
+}
 
 function AvailabilityBlock() {
   return (
@@ -308,7 +312,7 @@ function AvailableUsersTable() {
         </div>
         {TEST_USERS.map((name) => (
           <div key={name} className="flex items-center border-b border-border px-4 py-3.5 last:border-0">
-            <span className="flex-1 text-body font-medium text-text-primary">{name}</span>
+            <span className="flex-1 text-body font-medium text-text-primary">{formatUserName(name)}</span>
             <span className="flex-1 text-body text-text-primary">+998 90 123 45 67</span>
             <CopyButton value="+998 90 123 45 67" />
           </div>

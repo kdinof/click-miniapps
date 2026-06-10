@@ -9,21 +9,33 @@ import {
   MessageSquare,
   LogOut,
 } from 'lucide-react';
+import { DEVELOPER_DOCS_URL } from '@/lib/links';
 
 interface NavRowProps {
   icon: ReactNode;
   label: string;
   trailing?: ReactNode;
+  href?: string;
 }
 
-function NavRow({ icon, label, trailing }: NavRowProps) {
-  return (
-    <button className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left transition-colors duration-150 hover:bg-white/5">
+function NavRow({ icon, label, trailing, href }: NavRowProps) {
+  const cls =
+    'flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left transition-colors duration-150 hover:bg-white/5';
+  const content = (
+    <>
       <span className="flex size-6 shrink-0 items-center justify-center">{icon}</span>
       <span className="flex-1 text-body font-medium text-text-white">{label}</span>
       {trailing}
-    </button>
+    </>
   );
+  if (href) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>
+        {content}
+      </a>
+    );
+  }
+  return <button className={cls}>{content}</button>;
 }
 
 export function Sidebar({ appName }: { appName: string }) {
@@ -70,7 +82,7 @@ export function Sidebar({ appName }: { appName: string }) {
             label="RU"
             trailing={<ChevronDown size={24} className="text-text-white" />}
           />
-          <NavRow icon={<File size={24} className={iconCls} />} label="Документация" />
+          <NavRow icon={<File size={24} className={iconCls} />} label="Документация" href={DEVELOPER_DOCS_URL} />
           <NavRow icon={<FileText size={24} className={iconCls} />} label="Release Notes" />
           <NavRow icon={<MessageSquare size={24} className={iconCls} />} label="Помощник" />
           <NavRow icon={<LogOut size={24} className={iconCls} />} label="Выйти" />

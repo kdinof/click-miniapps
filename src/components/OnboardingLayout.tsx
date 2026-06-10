@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { Globe, ChevronDown, SquareTerminal } from 'lucide-react';
+import { DEVELOPER_DOCS_URL } from '@/lib/links';
 
 // Общий каркас страниц регистрации: верхняя панель (лого + язык),
 // 3D-иллюстрация над контентом и плавающий блок документации снизу.
@@ -30,10 +31,15 @@ export function OnboardingLayout({ children }: { children: ReactNode }) {
 
       {/* Документация для разработчиков */}
       <div className="flex justify-center px-4 pb-[50px] pt-4">
-        <div className="flex w-[500px] items-center justify-center gap-2.5 rounded-island bg-bg-island p-4">
+        <a
+          href={DEVELOPER_DOCS_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex w-[500px] items-center justify-center gap-2.5 rounded-island bg-bg-island p-4 transition-[filter] duration-150 hover:brightness-95"
+        >
           <SquareTerminal size={24} className="text-text-primary" />
           <span className="text-body text-text-primary">Документация для разработчиков</span>
-        </div>
+        </a>
       </div>
     </div>
   );
