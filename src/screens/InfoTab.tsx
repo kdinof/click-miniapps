@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Image, FileText, Upload, AlertCircle, Loader2, MoreVertical } from 'lucide-react';
+import { Image, Upload, AlertCircle, Loader2, MoreVertical } from 'lucide-react';
 import { Button } from '@/components/Button';
 import { Link } from '@/components/Link';
 import { TextField } from '@/components/TextField';
@@ -251,19 +251,14 @@ export function InfoTab() {
         <div className="flex gap-4">
           <PrepareCard
             icon={<Image size={24} />}
-            title="Дизайн и контент"
+            title="Оформление приложения"
             text="Подготовьте оформление Mini App, тексты, FAQ, поддержку пользователей и основные экраны по требованиям Click."
-          />
-          <PrepareCard
-            icon={<FileText size={24} />}
-            title="Договор и документы"
-            text="Заключите договор с Click, подготовьте реквизиты, логотип и данные компании для подключения Mini App."
           />
         </div>
         <div className="flex items-start gap-4 rounded-card bg-bg-subtle px-6 py-3">
           <img src="/assets/info-icon.svg" alt="" className="mt-0.5 size-5 shrink-0" />
           <div className="flex flex-col">
-            <p className="text-body font-semibold text-text-primary">Нужно подписать договор</p>
+            <p className="text-body font-semibold text-text-primary">Убедитесь, что договор подписан</p>
             <p className="text-body-sm text-text-secondary">
               Полный запуск станет доступен после подписания договора и прохождения модерации
             </p>
