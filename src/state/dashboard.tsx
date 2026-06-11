@@ -19,6 +19,7 @@ export interface State {
   contractSent: boolean;
   contractSigned: boolean;
   infoSaved: boolean;
+  moderationSent: boolean;
   modal: ModalType;
   toast: boolean;
   config: { subdomain: string; phones: string[] };
@@ -31,6 +32,7 @@ const initialState: State = {
   contractSent: false,
   contractSigned: false,
   infoSaved: false,
+  moderationSent: false,
   modal: null,
   toast: false,
   config: {
@@ -126,7 +128,7 @@ function reducer(state: State, action: Action): State {
     case 'SAVE_INFO':
       return { ...state, infoSaved: true };
     case 'SEND_TO_MODERATION':
-      return { ...state, modal: 'congratulations' };
+      return { ...state, modal: 'congratulations', moderationSent: true };
     default:
       return state;
   }

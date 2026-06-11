@@ -30,7 +30,7 @@ const TABS = [
 ];
 
 function getStatuses(state: State): StepStatus[] {
-  const { dev, config, contractPhone, contractSent, infoSaved, tab } = state;
+  const { dev, config, contractPhone, contractSent, infoSaved, moderationSent, tab } = state;
 
   const sandbox: StepStatus = 'done';
 
@@ -55,7 +55,10 @@ function getStatuses(state: State): StepStatus[] {
       ? 'current'
       : 'pending';
 
-  return [sandbox, testLaunch, contract, info, 'pending'];
+  const canModerate = infoSaved && contractSent;
+  const moderation: StepStatus = moderationSent ? 'done' : canModerate ? 'current' : 'pending';
+
+  return [sandbox, testLaunch, contract, info, moderation];
 }
 
 function Dashboard({ appName }: { appName: string }) {
