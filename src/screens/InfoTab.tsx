@@ -1,11 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
-import { Image, AlertCircle, Loader2 } from 'lucide-react';
+import { Image, AlertCircle, Loader2, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/Button';
 import { TextField } from '@/components/TextField';
 import { Select } from '@/components/Select';
 import { MultiSelect } from '@/components/MultiSelect';
 import { Switch } from '@/components/Switch';
-import { useDashboard } from '@/state/dashboard';
 import { useInfoForm, type UploadState } from '@/state/infoForm';
 import { AppDesignModal } from './AppDesignModal';
 
@@ -186,32 +185,6 @@ function LogoUploadArea({
   );
 }
 
-function PrepareCard({
-  icon,
-  title,
-  text,
-  onClick,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  text: string;
-  onClick?: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="flex flex-1 cursor-pointer flex-col gap-4 rounded-card bg-bg-subtle p-6 text-left transition-colors hover:bg-[#EBF0F5] active:bg-[#EBF0F5]"
-    >
-      <span className="text-text-primary">{icon}</span>
-      <div className="flex flex-col gap-1">
-        <h3 className="text-h2 text-text-primary">{title}</h3>
-        <p className="text-body-sm text-text-secondary">{text}</p>
-      </div>
-    </button>
-  );
-}
-
 function SectionTitle({ title, sub }: { title: string; sub?: string }) {
   return (
     <div className="flex flex-col gap-1">
@@ -222,14 +195,14 @@ function SectionTitle({ title, sub }: { title: string; sub?: string }) {
 }
 
 export function InfoTab() {
-  const { dispatch } = useDashboard();
   const { form, set } = useInfoForm();
   const [showDesignModal, setShowDesignModal] = useState(false);
   const {
     hasCert, name, phone, businessName, telegramUser,
     nameRU, nameUZ, nameENG, descRU, descUZ, descENG,
     category, catRU, catUZ, catENG, regions,
-    svgState, pngState, pdfRU, pdfUZ, pdfENG, saved,
+    svgState, pngState, pdfRU, pdfUZ, pdfENG,
+    supportContact, supportPdf, faqs,
   } = form;
 
   const setHasCert = (v: boolean) => set('hasCert', v);
@@ -253,27 +226,12 @@ export function InfoTab() {
   const setPdfRU = (v: UploadState) => set('pdfRU', v);
   const setPdfUZ = (v: UploadState) => set('pdfUZ', v);
   const setPdfENG = (v: UploadState) => set('pdfENG', v);
-
-  const isFormComplete =
-    name.trim() !== '' &&
-    phone.trim() !== '' &&
-    businessName.trim() !== '' &&
-    telegramUser.trim() !== '' &&
-    nameRU.trim() !== '' &&
-    nameUZ.trim() !== '' &&
-    nameENG.trim() !== '' &&
-    descRU.trim() !== '' &&
-    descUZ.trim() !== '' &&
-    descENG.trim() !== '' &&
-    category !== '' &&
-    regions.length > 0 &&
-    svgState.status === 'uploaded' &&
-    pngState.status === 'uploaded';
-
-  function handleSave() {
-    set('saved', true);
-    dispatch({ type: 'SAVE_INFO' });
-  }
+  const setSupportContact = (v: string) => set('supportContact', v);
+  const setSupportPdf = (v: UploadState) => set('supportPdf', v);
+  const updateFaq = (index: number, key: keyof (typeof faqs)[number], value: string) =>
+    set('faqs', faqs.map((f, i) => (i === index ? { ...f, [key]: value } : f)));
+  const addFaq = () => set('faqs', [...faqs, { question: '', answer: '' }]);
+  const removeFaq = (index: number) => set('faqs', faqs.filter((_, i) => i !== index));
 
   function handleUpload(
     file: File,
@@ -294,205 +252,261 @@ export function InfoTab() {
   }
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-8 rounded-island bg-bg-island p-9">
       {showDesignModal && <AppDesignModal onClose={() => setShowDesignModal(false)} />}
-      {/* Prepare block */}
-      <div className="flex flex-col gap-4 rounded-island bg-bg-island p-6">
-        <h2 className="text-h2 text-text-primary">Перед запуском подготовьте</h2>
-        <div className="flex gap-4">
-          <PrepareCard
-            icon={<Image size={24} />}
-            title="Оформление приложения"
-            text="Подготовьте оформление Mini App, тексты, FAQ, поддержку пользователей и основные экраны по требованиям Click."
-            onClick={() => setShowDesignModal(true)}
-          />
-        </div>
-        <div className="flex items-start gap-4 rounded-card bg-bg-subtle px-6 py-3">
-          <img src="/assets/info-icon.svg" alt="" className="mt-0.5 size-5 shrink-0" />
+      {/* Требования по дизайну и контенту */}
+      <div className="flex items-center gap-3 rounded-island bg-[#C5D2E0]/[0.16] px-6 py-3">
+        <div className="flex flex-1 items-start gap-3">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+            <path d="M19 2H9C8.20435 2 7.44129 2.31607 6.87868 2.87868C6.31607 3.44129 6 4.20435 6 5V6H5C4.20435 6 3.44129 6.31607 2.87868 6.87868C2.31607 7.44129 2 8.20435 2 9V19C2 19.7957 2.31607 20.5587 2.87868 21.1213C3.44129 21.6839 4.20435 22 5 22H15C15.7957 22 16.5587 21.6839 17.1213 21.1213C17.6839 20.5587 18 19.7957 18 19V18H19C19.7957 18 20.5587 17.6839 21.1213 17.1213C21.6839 16.5587 22 15.7957 22 15V5C22 4.20435 21.6839 3.44129 21.1213 2.87868C20.5587 2.31607 19.7957 2 19 2ZM16 19C16 19.2652 15.8946 19.5196 15.7071 19.7071C15.5196 19.8946 15.2652 20 15 20H5C4.73478 20 4.48043 19.8946 4.29289 19.7071C4.10536 19.5196 4 19.2652 4 19V12H16V19ZM16 10H4V9C4 8.73478 4.10536 8.48043 4.29289 8.29289C4.48043 8.10536 4.73478 8 5 8H15C15.2652 8 15.5196 8.10536 15.7071 8.29289C15.8946 8.48043 16 8.73478 16 9V10ZM20 15C20 15.2652 19.8946 15.5196 19.7071 15.7071C19.5196 15.8946 19.2652 16 19 16H18V9C17.9973 8.65886 17.9364 8.32067 17.82 8H20V15ZM20 6H8V5C8 4.73478 8.10536 4.48043 8.29289 4.29289C8.48043 4.10536 8.73478 4 9 4H19C19.2652 4 19.5196 4.10536 19.7071 4.29289C19.8946 4.48043 20 4.73478 20 5V6Z" fill="#141414"/>
+          </svg>
           <div className="flex flex-col">
-            <p className="text-body font-semibold text-text-primary">Убедитесь, что договор подписан</p>
-            <p className="text-body-sm text-text-secondary">
-              Полный запуск станет доступен после подписания договора и прохождения модерации
+            <p className="text-body font-semibold text-text-primary">Требования по дизайну и контенту</p>
+            <p className="text-body text-text-secondary">
+              Подготовьте оформление Mini App, тексты, FAQ, поддержку пользователей и основные экраны по требованиям Click.
             </p>
           </div>
+        </div>
+        <Button variant="secondary" className="w-[255px]" onClick={() => setShowDesignModal(true)}>
+          Ознакомиться
+        </Button>
+      </div>
+
+      {/* Business info */}
+      <div className="flex flex-col gap-4">
+        <SectionTitle title="Информация о бизнесе" sub="Заполните информацию и мы свяжемся с вами" />
+        <div className="grid grid-cols-2 gap-4">
+          <TextField label="Как к вам обращаться?" placeholder="Укажите как к вам обращаться" value={name} onChange={setName} />
+          <TextField phone label="Номер телефона" placeholder="Укажите номер телефона" value={phone} onChange={setPhone} />
         </div>
       </div>
 
-      {/* General info form */}
-      <div className="flex flex-col gap-8 rounded-island bg-bg-island p-9">
-        <div className="flex items-start justify-between">
-          <div className="flex flex-col gap-1">
-            <h2 className="text-h2 text-text-primary">Общая информация</h2>
-            <p className="text-body-sm text-text-secondary">
-              Ознакомьтесь с Документацией перед заполнением
-            </p>
-          </div>
-          <Button
-            variant={saved ? 'secondary' : isFormComplete ? 'primary' : 'secondary'}
-            className="w-[170px]"
-            disabled={!isFormComplete}
-            onClick={handleSave}
-            leftIcon={saved ? <span className="text-accent">✓</span> : undefined}
-          >
-            {saved ? 'Сохранено' : 'Сохранить'}
-          </Button>
+      {/* Telegram group */}
+      <div className="flex flex-col gap-4">
+        <SectionTitle
+          title="Создание группы в телеграм"
+          sub="Мы создадим группу в телеграмме, для поддержки интеграции. Добавьте в неё свою команду разработки"
+        />
+        <div className="grid grid-cols-2 gap-4">
+          <TextField label="Название бизнеса" placeholder="Укажите название своего бизнеса" value={businessName} onChange={setBusinessName} />
+          <TextField label="Юзер в телеграмме" placeholder="@telegram_name" value={telegramUser} onChange={setTelegramUser} />
         </div>
-
-        {/* Business info */}
-        <div className="flex flex-col gap-4">
-          <SectionTitle title="Информация о бизнесе" sub="Заполните информацию и мы свяжемся с вами" />
-          <div className="grid grid-cols-2 gap-4">
-            <TextField label="Как к вам обращаться?" placeholder="Укажите как к вам обращаться" value={name} onChange={setName} />
-            <TextField phone label="Номер телефона" placeholder="Укажите номер телефона" value={phone} onChange={setPhone} />
-          </div>
+        <div className="flex items-center justify-between">
+          <span className="text-body text-text-primary">
+            У меня есть свидетельство о регистрации бизнеса
+          </span>
+          <Switch checked={hasCert} onChange={setHasCert} />
         </div>
+      </div>
 
-        {/* Telegram group */}
-        <div className="flex flex-col gap-4">
+      <hr className="border-t border-[#C4C8CC]" />
+
+      {/* Mini App info */}
+      <div className="flex flex-col gap-4">
+        <SectionTitle
+          title="Информация о МиниАппе"
+          sub="Заполните название и описание МиниАппа на трёх языках и выберите категорию"
+        />
+
+        <div className="flex flex-col gap-3">
           <SectionTitle
-            title="Создание группы в телеграм"
-            sub="Мы создадим группу в телеграмме, для поддержки интеграции. Добавьте в неё свою команду разработки"
-          />
-          <div className="grid grid-cols-2 gap-4">
-            <TextField label="Название бизнеса" placeholder="Укажите название своего бизнеса" value={businessName} onChange={setBusinessName} />
-            <TextField label="Юзер в телеграмме" placeholder="@telegram_name" value={telegramUser} onChange={setTelegramUser} />
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-body text-text-primary">
-              У меня есть свидетельство о регистрации бизнеса
-            </span>
-            <Switch checked={hasCert} onChange={setHasCert} />
-          </div>
-        </div>
-
-        <hr className="border-t border-[#C4C8CC]" />
-
-        {/* Mini App info */}
-        <div className="flex flex-col gap-4">
-          <SectionTitle
-            title="Информация о МиниАппе"
-            sub="Заполните название и описание МиниАппа на трёх языках и выберите категорию"
-          />
-
-          <div className="flex flex-col gap-3">
-            <SectionTitle
-              title="Как данные будут отображаться в мини-аппе"
-              sub="После заполнения формы пользователь увидит название, описание и категорию в интерфейсе мини-апла."
-            />
-            <div className="grid grid-cols-3 gap-4">
-              {[
-                { label: 'Название мини-аппа', src: '/assets/info/app-name.png' },
-                { label: 'Описание компании', src: '/assets/info/description.png' },
-                { label: 'Категория в каталоге', src: '/assets/info/category.png' },
-              ].map((m) => (
-                <div key={m.label} className="flex flex-col gap-2">
-                  <p className="text-center text-body-sm font-semibold text-text-primary">{m.label}</p>
-                  <img src={m.src} alt={m.label} className="w-full" />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Name RU/UZ/ENG */}
-          <div className="grid grid-cols-3 gap-4">
-            <TextField label="Название RU" placeholder="Введите название" value={nameRU} onChange={setNameRU} />
-            <TextField label="Название UZ" placeholder="Введите название" value={nameUZ} onChange={setNameUZ} />
-            <TextField label="Название ENG" placeholder="Введите название" value={nameENG} onChange={setNameENG} />
-          </div>
-
-          {/* Description RU/UZ/ENG */}
-          <div className="grid grid-cols-3 gap-4">
-            <TextField textarea maxLength={400} label="Описание RU" placeholder="Из описания должно быть понятно, какие услуги вы оказываете" helper="max: 400" value={descRU} onChange={setDescRU} />
-            <TextField textarea maxLength={400} label="Описание UZ" placeholder="Из описания должно быть понятно, какие услуги вы оказываете" helper="max: 400" value={descUZ} onChange={setDescUZ} />
-            <TextField textarea maxLength={400} label="Описание ENG" placeholder="Из описания должно быть понятно, какие услуги вы оказываете" helper="max: 400" value={descENG} onChange={setDescENG} />
-          </div>
-
-          {/* Category descr RU/UZ/ENG */}
-          <div className="grid grid-cols-3 gap-4">
-            <TextField maxLength={30} label="Для категории RU" placeholder="Описание для категории" helper="max: 30" value={catRU} onChange={setCatRU} />
-            <TextField maxLength={30} label="Для категории UZ" placeholder="Turkum tavsifi" helper="max: 30" value={catUZ} onChange={setCatUZ} />
-            <TextField maxLength={30} label="Для категории ENG" placeholder="Category Description" helper="max: 30" value={catENG} onChange={setCatENG} />
-          </div>
-
-          <Select label="Категория" placeholder="Выберите категорию" options={['Финансы', 'Доставка', 'Образование', 'Развлечения', 'Сервисы']} value={category} onChange={setCategory} />
-          <MultiSelect
-            label="Регион оказания услуг"
-            placeholder="Выберите регион оказания услуг, где вы будете работать"
-            options={['Ташкент', 'Самаркандская область', 'Бухарская область', 'Ферганская область', 'Андижанская область', 'Наманганская область', 'Хорезмская область', 'Сурхандарьинская область', 'Кашкадарьинская область', 'Джизакская область', 'Сырдарьинская область', 'Навоийская область', 'Вся страна']}
-            value={regions}
-            onChange={setRegions}
-          />
-        </div>
-
-        <hr className="border-t border-[#C4C8CC]" />
-
-        {/* Logo upload */}
-        <div className="flex flex-col gap-4">
-          <SectionTitle
-            title="Логотип"
-            sub="Загрузите логотип компании для карточки Mini App в Click SuperApp."
-          />
-          <div className="grid grid-cols-2 gap-4">
-            <LogoUploadArea
-              label="Загрузить SVG"
-              hint="Формат: SVG, размер: 32×32 px"
-              accept=".svg"
-              allowedExt="svg"
-              state={svgState}
-              onFile={(f) => handleUpload(f, 'svg', setSvgState)}
-              onRemove={() => setSvgState({ status: 'idle' })}
-            />
-            <LogoUploadArea
-              label="Загрузить PNG"
-              hint="Формат: PNG, размер: 512×512 px"
-              accept=".png"
-              allowedExt="png"
-              state={pngState}
-              onFile={(f) => handleUpload(f, 'png', setPngState)}
-              onRemove={() => setPngState({ status: 'idle' })}
-            />
-          </div>
-          <div className="flex items-start gap-3 rounded-card bg-bg-subtle px-4 py-3">
-            <img src="/assets/info-icon.svg" alt="" className="mt-0.5 size-5 shrink-0" />
-            <div className="flex flex-col">
-              <span className="text-body-sm font-semibold text-text-primary">Проверка логотипа перед публикацией</span>
-              <span className="text-body-sm text-text-secondary">
-                Перед публикацией логотип может пройти проверку и адаптацию под визуальные требования Click SuperApp.
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <hr className="border-t border-[#C4C8CC]" />
-
-        {/* Oferta */}
-        <div className="flex flex-col gap-4">
-          <SectionTitle
-            title="Оферта"
-            sub="Загрузите оферты на трёх языках в отдельных pdf файлах"
+            title="Как данные будут отображаться в мини-аппе"
+            sub="После заполнения формы пользователь увидит название, описание и категорию в интерфейсе мини-апла."
           />
           <div className="grid grid-cols-3 gap-4">
             {[
-              { label: 'Файл RU', state: pdfRU, setState: setPdfRU },
-              { label: 'Файл UZ', state: pdfUZ, setState: setPdfUZ },
-              { label: 'Файл ENG', state: pdfENG, setState: setPdfENG },
-            ].map(({ label, state, setState }) => (
-              <div key={label} className="flex flex-col gap-1.5">
-                <span className="text-body-sm text-text-primary">{label}</span>
-                <LogoUploadArea
-                  label="Загрузить PDF"
-                  hint="Формат: PDF"
-                  accept=".pdf"
-                  allowedExt="pdf"
-                  state={state}
-                  onFile={(f) => handleUpload(f, 'pdf', setState)}
-                  onRemove={() => setState({ status: 'idle' })}
-                  deleteOnly
-                />
+              { label: 'Название мини-аппа', src: '/assets/info/app-name.png' },
+              { label: 'Описание компании', src: '/assets/info/description.png' },
+              { label: 'Категория в каталоге', src: '/assets/info/category.png' },
+            ].map((m) => (
+              <div key={m.label} className="flex flex-col gap-2">
+                <p className="text-center text-body-sm font-semibold text-text-primary">{m.label}</p>
+                <img src={m.src} alt={m.label} className="w-full" />
               </div>
             ))}
           </div>
         </div>
+
+        {/* Name RU/UZ/ENG */}
+        <div className="grid grid-cols-3 gap-4">
+          <TextField label="Название RU" placeholder="Введите название" value={nameRU} onChange={setNameRU} />
+          <TextField label="Название UZ" placeholder="Введите название" value={nameUZ} onChange={setNameUZ} />
+          <TextField label="Название ENG" placeholder="Введите название" value={nameENG} onChange={setNameENG} />
+        </div>
+
+        {/* Description RU/UZ/ENG */}
+        <div className="grid grid-cols-3 gap-4">
+          <TextField textarea maxLength={400} label="Описание RU" placeholder="Из описания должно быть понятно, какие услуги вы оказываете" helper="max: 400" value={descRU} onChange={setDescRU} />
+          <TextField textarea maxLength={400} label="Описание UZ" placeholder="Из описания должно быть понятно, какие услуги вы оказываете" helper="max: 400" value={descUZ} onChange={setDescUZ} />
+          <TextField textarea maxLength={400} label="Описание ENG" placeholder="Из описания должно быть понятно, какие услуги вы оказываете" helper="max: 400" value={descENG} onChange={setDescENG} />
+        </div>
+
+        {/* Category descr RU/UZ/ENG */}
+        <div className="grid grid-cols-3 gap-4">
+          <TextField maxLength={30} label="Для категории RU" placeholder="Описание для категории" helper="max: 30" value={catRU} onChange={setCatRU} />
+          <TextField maxLength={30} label="Для категории UZ" placeholder="Turkum tavsifi" helper="max: 30" value={catUZ} onChange={setCatUZ} />
+          <TextField maxLength={30} label="Для категории ENG" placeholder="Category Description" helper="max: 30" value={catENG} onChange={setCatENG} />
+        </div>
+
+        <Select label="Категория" placeholder="Выберите категорию" options={['Финансы', 'Доставка', 'Образование', 'Развлечения', 'Сервисы']} value={category} onChange={setCategory} />
+        <MultiSelect
+          label="Регион оказания услуг"
+          placeholder="Выберите регион оказания услуг, где вы будете работать"
+          options={['Ташкент', 'Самаркандская область', 'Бухарская область', 'Ферганская область', 'Андижанская область', 'Наманганская область', 'Хорезмская область', 'Сурхандарьинская область', 'Кашкадарьинская область', 'Джизакская область', 'Сырдарьинская область', 'Навоийская область', 'Вся страна']}
+          value={regions}
+          onChange={setRegions}
+        />
+      </div>
+
+      <hr className="border-t border-[#C4C8CC]" />
+
+      {/* Logo upload */}
+      <div className="flex flex-col gap-4">
+        <SectionTitle
+          title="Логотип"
+          sub="Загрузите логотип компании для карточки Mini App в Click SuperApp."
+        />
+        <div className="grid grid-cols-2 gap-4">
+          <LogoUploadArea
+            label="Загрузить SVG"
+            hint="Формат: SVG, размер: 32×32 px"
+            accept=".svg"
+            allowedExt="svg"
+            state={svgState}
+            onFile={(f) => handleUpload(f, 'svg', setSvgState)}
+            onRemove={() => setSvgState({ status: 'idle' })}
+          />
+          <LogoUploadArea
+            label="Загрузить PNG"
+            hint="Формат: PNG, размер: 512×512 px"
+            accept=".png"
+            allowedExt="png"
+            state={pngState}
+            onFile={(f) => handleUpload(f, 'png', setPngState)}
+            onRemove={() => setPngState({ status: 'idle' })}
+          />
+        </div>
+        <div className="flex items-start gap-3 rounded-card bg-bg-subtle px-4 py-3">
+          <img src="/assets/info-icon.svg" alt="" className="mt-0.5 size-5 shrink-0" />
+          <div className="flex flex-col">
+            <span className="text-body-sm font-semibold text-text-primary">Проверка логотипа перед публикацией</span>
+            <span className="text-body-sm text-text-secondary">
+              Перед публикацией логотип может пройти проверку и адаптацию под визуальные требования Click SuperApp.
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <hr className="border-t border-[#C4C8CC]" />
+
+      {/* Oferta */}
+      <div className="flex flex-col gap-4">
+        <SectionTitle
+          title="Оферта"
+          sub="Загрузите оферты на трёх языках в отдельных pdf файлах"
+        />
+        <div className="grid grid-cols-3 gap-4">
+          {[
+            { label: 'Файл RU', state: pdfRU, setState: setPdfRU },
+            { label: 'Файл UZ', state: pdfUZ, setState: setPdfUZ },
+            { label: 'Файл ENG', state: pdfENG, setState: setPdfENG },
+          ].map(({ label, state, setState }) => (
+            <div key={label} className="flex flex-col gap-1.5">
+              <span className="text-body-sm text-text-primary">{label}</span>
+              <LogoUploadArea
+                label="Загрузить PDF"
+                hint="Формат: PDF"
+                accept=".pdf"
+                allowedExt="pdf"
+                state={state}
+                onFile={(f) => handleUpload(f, 'pdf', setState)}
+                onRemove={() => setState({ status: 'idle' })}
+                deleteOnly
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <hr className="border-t border-[#C4C8CC]" />
+
+      {/* User support */}
+      <div className="flex flex-col gap-4">
+        <SectionTitle
+          title="Поддержка пользователей"
+          sub="Подготовьте данные для колл-центра – мы обучим команду и поможем с обращениями."
+        />
+        <TextField
+          label="Укажите контакт поддержки"
+          placeholder="Телефон, email или @username в Telegram"
+          value={supportContact}
+          onChange={setSupportContact}
+        />
+        <div className="flex flex-col gap-1.5">
+          <span className="text-body-sm text-text-primary">Файл RU</span>
+          <LogoUploadArea
+            label="Загрузить PDF"
+            hint="Формат: PDF"
+            accept=".pdf"
+            allowedExt="pdf"
+            state={supportPdf}
+            onFile={(f) => handleUpload(f, 'pdf', setSupportPdf)}
+            onRemove={() => setSupportPdf({ status: 'idle' })}
+            deleteOnly
+          />
+        </div>
+        <button type="button" className="self-start text-body-sm font-medium text-accent hover:underline">
+          Скачать шаблон клиентского пути
+        </button>
+      </div>
+
+      <hr className="border-t border-[#C4C8CC]" />
+
+      {/* FAQs */}
+      <div className="flex flex-col gap-4">
+        <SectionTitle
+          title="FAQs МиниАппа"
+          sub="Добавьте самые частые вопросы и ответы, которые помогут клиентам разобраться в вашем сервисе."
+        />
+        {faqs.map((faq, i) => (
+          <div key={i} className="flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <p className="text-body font-semibold text-text-primary">Вопрос {i + 1}</p>
+              {faqs.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => removeFaq(i)}
+                  aria-label="Удалить вопрос"
+                  className="flex items-center justify-center rounded-lg p-1 text-text-tertiary transition-colors hover:bg-bg-subtle hover:text-error"
+                >
+                  <Trash2 size={18} />
+                </button>
+              )}
+            </div>
+            <TextField
+              label="Вопрос"
+              placeholder="Напишите сам вопрос"
+              value={faq.question}
+              onChange={(v) => updateFaq(i, 'question', v)}
+            />
+            <TextField
+              textarea
+              maxLength={400}
+              label="Ответ"
+              placeholder="Напишите решение или ответ на вопрос"
+              helper="max: 400"
+              value={faq.answer}
+              onChange={(v) => updateFaq(i, 'answer', v)}
+            />
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={addFaq}
+          className="flex items-center justify-center gap-2 self-center font-sans text-[17px] font-semibold text-accent transition-opacity hover:opacity-80"
+        >
+          <Plus size={20} /> Добавить новый вопрос
+        </button>
       </div>
     </div>
   );
