@@ -6,7 +6,6 @@ import { Select } from '@/components/Select';
 import { MultiSelect } from '@/components/MultiSelect';
 import { Switch } from '@/components/Switch';
 import { useInfoForm, type UploadState } from '@/state/infoForm';
-import { AppDesignModal } from './AppDesignModal';
 
 function formatSize(bytes: number) {
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} kb`;
@@ -196,7 +195,6 @@ function SectionTitle({ title, sub }: { title: string; sub?: string }) {
 
 export function InfoTab() {
   const { form, set } = useInfoForm();
-  const [showDesignModal, setShowDesignModal] = useState(false);
   const {
     hasCert, name, phone, businessName, telegramUser,
     nameRU, nameUZ, nameENG, descRU, descUZ, descENG,
@@ -253,7 +251,6 @@ export function InfoTab() {
 
   return (
     <div className="flex flex-col gap-8 rounded-island bg-bg-island p-9">
-      {showDesignModal && <AppDesignModal onClose={() => setShowDesignModal(false)} />}
       {/* Требования по дизайну и контенту */}
       <div className="flex items-center gap-3 rounded-island bg-[#C5D2E0]/[0.16] px-6 py-3">
         <div className="flex flex-1 items-start gap-3">
@@ -267,7 +264,11 @@ export function InfoTab() {
             </p>
           </div>
         </div>
-        <Button variant="secondary" className="w-[255px]" onClick={() => setShowDesignModal(true)}>
+        <Button
+          variant="secondary"
+          className="w-[255px]"
+          onClick={() => window.open('/docs.html', '_blank', 'noopener,noreferrer')}
+        >
           Ознакомиться
         </Button>
       </div>
