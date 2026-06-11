@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Image, AlertCircle, Loader2 } from 'lucide-react';
+import { Image, AlertCircle, Loader2, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/Button';
 import { TextField } from '@/components/TextField';
 import { Select } from '@/components/Select';
@@ -200,6 +200,7 @@ export function InfoTab() {
     nameRU, nameUZ, nameENG, descRU, descUZ, descENG,
     category, catRU, catUZ, catENG, regions,
     svgState, pngState, pdfRU, pdfUZ, pdfENG,
+    supportContact, supportPdf, faqs,
   } = form;
 
   const setHasCert = (v: boolean) => set('hasCert', v);
@@ -223,6 +224,12 @@ export function InfoTab() {
   const setPdfRU = (v: UploadState) => set('pdfRU', v);
   const setPdfUZ = (v: UploadState) => set('pdfUZ', v);
   const setPdfENG = (v: UploadState) => set('pdfENG', v);
+  const setSupportContact = (v: string) => set('supportContact', v);
+  const setSupportPdf = (v: UploadState) => set('supportPdf', v);
+  const updateFaq = (index: number, key: keyof (typeof faqs)[number], value: string) =>
+    set('faqs', faqs.map((f, i) => (i === index ? { ...f, [key]: value } : f)));
+  const addFaq = () => set('faqs', [...faqs, { question: '', answer: '' }]);
+  const removeFaq = (index: number) => set('faqs', faqs.filter((_, i) => i !== index));
 
   function handleUpload(
     file: File,
@@ -416,6 +423,87 @@ export function InfoTab() {
             </div>
           ))}
         </div>
+      </div>
+
+      <hr className="border-t border-[#C4C8CC]" />
+
+      {/* User support */}
+      <div className="flex flex-col gap-4">
+        <SectionTitle
+          title="Поддержка пользователей"
+          sub="Подготовьте данные для колл-центра – мы обучим команду и поможем с обращениями."
+        />
+        <TextField
+          label="Укажите контакт поддержки"
+          placeholder="Телефон, email или @username в Telegram"
+          value={supportContact}
+          onChange={setSupportContact}
+        />
+        <div className="flex flex-col gap-1.5">
+          <span className="text-body-sm text-text-primary">Файл RU</span>
+          <LogoUploadArea
+            label="Загрузить PDF"
+            hint="Формат: PDF"
+            accept=".pdf"
+            allowedExt="pdf"
+            state={supportPdf}
+            onFile={(f) => handleUpload(f, 'pdf', setSupportPdf)}
+            onRemove={() => setSupportPdf({ status: 'idle' })}
+            deleteOnly
+          />
+        </div>
+        <button type="button" className="self-start text-body-sm font-medium text-accent hover:underline">
+          Скачать шаблон клиентского пути
+        </button>
+      </div>
+
+      <hr className="border-t border-[#C4C8CC]" />
+
+      {/* FAQs */}
+      <div className="flex flex-col gap-4">
+        <SectionTitle
+          title="FAQs МиниАппа"
+          sub="Добавьте самые частые вопросы и ответы, которые помогут клиентам разобраться в вашем сервисе."
+        />
+        {faqs.map((faq, i) => (
+          <div key={i} className="flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <p className="text-body font-semibold text-text-primary">Вопрос {i + 1}</p>
+              {faqs.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => removeFaq(i)}
+                  aria-label="Удалить вопрос"
+                  className="flex items-center justify-center rounded-lg p-1 text-text-tertiary transition-colors hover:bg-bg-subtle hover:text-error"
+                >
+                  <Trash2 size={18} />
+                </button>
+              )}
+            </div>
+            <TextField
+              label="Вопрос"
+              placeholder="Напишите сам вопрос"
+              value={faq.question}
+              onChange={(v) => updateFaq(i, 'question', v)}
+            />
+            <TextField
+              textarea
+              maxLength={400}
+              label="Ответ"
+              placeholder="Напишите решение или ответ на вопрос"
+              helper="max: 400"
+              value={faq.answer}
+              onChange={(v) => updateFaq(i, 'answer', v)}
+            />
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={addFaq}
+          className="flex items-center justify-center gap-2 self-center font-sans text-[17px] font-semibold text-accent transition-opacity hover:opacity-80"
+        >
+          <Plus size={20} /> Добавить новый вопрос
+        </button>
       </div>
     </div>
   );

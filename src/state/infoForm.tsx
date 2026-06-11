@@ -6,6 +6,11 @@ export type UploadState =
   | { status: 'uploaded'; name: string; size: string; previewUrl?: string; file: File }
   | { status: 'error'; name: string; message: string };
 
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
 export interface InfoFormState {
   hasCert: boolean;
   name: string;
@@ -28,6 +33,9 @@ export interface InfoFormState {
   pdfRU: UploadState;
   pdfUZ: UploadState;
   pdfENG: UploadState;
+  supportContact: string;
+  supportPdf: UploadState;
+  faqs: FaqItem[];
 }
 
 const initial: InfoFormState = {
@@ -52,6 +60,9 @@ const initial: InfoFormState = {
   pdfRU: { status: 'idle' },
   pdfUZ: { status: 'idle' },
   pdfENG: { status: 'idle' },
+  supportContact: '',
+  supportPdf: { status: 'idle' },
+  faqs: [{ question: '', answer: '' }],
 };
 
 /** Все обязательные поля «Общей информации» заполнены — управляет доступностью модерации. */
