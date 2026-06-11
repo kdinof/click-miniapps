@@ -1,6 +1,4 @@
 import {
-  Box,
-  AppWindow,
   Sparkles,
   FileText,
   Rocket,
@@ -87,18 +85,15 @@ function LaunchBlock() {
 function SandboxCard() {
   return (
     <a href={DEVELOPER_DOCS_URL} target="_blank" rel="noopener noreferrer" className="flex flex-1 cursor-pointer flex-col gap-5 rounded-island bg-bg-island p-6 text-left transition-colors hover:bg-[#EBF0F5] active:bg-[#EBF0F5]">
-      <div className="flex flex-col gap-4">
-        <Box size={24} className="text-text-primary" />
-        <div className="flex flex-col gap-1">
-          <div>
-            <Badge icon={<FileText size={12} />}>.md файлы с инструкциями</Badge>
-          </div>
-          <h3 className="text-h2 text-text-primary">Настройте интеграции, используя Sandbox и документацию</h3>
-          <p className="text-body-sm text-text-secondary">
-            Разработчик может получить доступ к sandbox, изучить документацию и начать
-            тестовую интеграцию до завершения полной бизнесовой проверки.
-          </p>
+      <div className="flex flex-col gap-1">
+        <div>
+          <Badge icon={<FileText size={12} />}>.md файлы с инструкциями</Badge>
         </div>
+        <h3 className="text-body font-semibold text-text-primary">Sandbox и документация</h3>
+        <p className="text-body-sm text-text-secondary">
+          Разработчик может получить доступ к sandbox, изучить документацию и начать
+          тестовую интеграцию до завершения полной бизнесовой проверки.
+        </p>
       </div>
     </a>
   );
@@ -108,20 +103,17 @@ function AICard() {
   const { dispatch } = useDashboard();
   return (
     <button type="button" onClick={() => dispatch({ type: 'OPEN_OPTIONS' })} className="flex flex-1 cursor-pointer flex-col gap-5 rounded-island bg-bg-island p-6 text-left transition-colors hover:bg-[#EBF0F5] active:bg-[#EBF0F5]">
-      <div className="flex flex-col gap-4">
-        <AppWindow size={24} className="text-text-primary" />
-        <div className="flex flex-col gap-1">
-          <div>
-            <Badge variant="violet" icon={<Sparkles size={12} />}>
-              AI генерация приложений
-            </Badge>
-          </div>
-          <h3 className="text-h2 text-text-primary">Нет приложения?</h3>
-          <p className="text-body-sm text-text-secondary">
-            Создайте Mini App с помощью AI или выберите готовый способ запуска через
-            партнёров и витрину.
-          </p>
+      <div className="flex flex-col gap-1">
+        <div>
+          <Badge variant="violet" icon={<Sparkles size={12} />}>
+            AI генерация приложений
+          </Badge>
         </div>
+        <h3 className="text-body font-semibold text-text-primary">Нет приложения?</h3>
+        <p className="text-body-sm text-text-secondary">
+          Создайте Mini App с помощью AI или выберите готовый способ запуска через
+          партнёров и витрину.
+        </p>
       </div>
     </button>
   );
@@ -341,9 +333,12 @@ export function DevTab() {
         </>
       ) : (
         <>
-          <div className="flex items-stretch gap-2">
-            <SandboxCard />
-            <AICard />
+          <div className="flex flex-col gap-4">
+            <h2 className="text-h2 text-text-primary">Создайте миниапп и настройте интеграции</h2>
+            <div className="flex items-stretch gap-2">
+              <SandboxCard />
+              <AICard />
+            </div>
           </div>
           <TokenCard variant={tokenVariant} />
           {state.dev === 'tokenGenerated' && <LaunchBlock />}
