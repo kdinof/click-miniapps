@@ -6,6 +6,11 @@ export type UploadState =
   | { status: 'uploaded'; name: string; size: string; previewUrl?: string; file: File }
   | { status: 'error'; name: string; message: string };
 
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
 export interface InfoFormState {
   hasCert: boolean;
   name: string;
@@ -28,7 +33,9 @@ export interface InfoFormState {
   pdfRU: UploadState;
   pdfUZ: UploadState;
   pdfENG: UploadState;
-  saved: boolean;
+  supportContact: string;
+  supportPdf: UploadState;
+  faqs: FaqItem[];
 }
 
 const initial: InfoFormState = {
@@ -53,8 +60,30 @@ const initial: InfoFormState = {
   pdfRU: { status: 'idle' },
   pdfUZ: { status: 'idle' },
   pdfENG: { status: 'idle' },
-  saved: false,
+  supportContact: '',
+  supportPdf: { status: 'idle' },
+  faqs: [{ question: '', answer: '' }],
 };
+
+/** Все обязательные поля «Общей информации» заполнены — управляет доступностью модерации. */
+export function isInfoFormComplete(f: InfoFormState): boolean {
+  return (
+    f.name.trim() !== '' &&
+    f.phone.trim() !== '' &&
+    f.businessName.trim() !== '' &&
+    f.telegramUser.trim() !== '' &&
+    f.nameRU.trim() !== '' &&
+    f.nameUZ.trim() !== '' &&
+    f.nameENG.trim() !== '' &&
+    f.descRU.trim() !== '' &&
+    f.descUZ.trim() !== '' &&
+    f.descENG.trim() !== '' &&
+    f.category !== '' &&
+    f.regions.length > 0 &&
+    f.svgState.status === 'uploaded' &&
+    f.pngState.status === 'uploaded'
+  );
+}
 
 const InfoFormContext = createContext<{
   form: InfoFormState;
