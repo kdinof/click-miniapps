@@ -7,6 +7,7 @@ import { MultiSelect } from '@/components/MultiSelect';
 import { Switch } from '@/components/Switch';
 import { useDashboard } from '@/state/dashboard';
 import { useInfoForm, type UploadState } from '@/state/infoForm';
+import { AppDesignModal } from './AppDesignModal';
 
 function formatSize(bytes: number) {
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} kb`;
@@ -223,6 +224,7 @@ function SectionTitle({ title, sub }: { title: string; sub?: string }) {
 export function InfoTab() {
   const { dispatch } = useDashboard();
   const { form, set } = useInfoForm();
+  const [showDesignModal, setShowDesignModal] = useState(false);
   const {
     hasCert, name, phone, businessName, telegramUser,
     nameRU, nameUZ, nameENG, descRU, descUZ, descENG,
@@ -293,6 +295,7 @@ export function InfoTab() {
 
   return (
     <div className="flex flex-col gap-5">
+      {showDesignModal && <AppDesignModal onClose={() => setShowDesignModal(false)} />}
       {/* Prepare block */}
       <div className="flex flex-col gap-4 rounded-island bg-bg-island p-6">
         <h2 className="text-h2 text-text-primary">Перед запуском подготовьте</h2>
@@ -301,6 +304,7 @@ export function InfoTab() {
             icon={<Image size={24} />}
             title="Оформление приложения"
             text="Подготовьте оформление Mini App, тексты, FAQ, поддержку пользователей и основные экраны по требованиям Click."
+            onClick={() => setShowDesignModal(true)}
           />
         </div>
         <div className="flex items-start gap-4 rounded-card bg-bg-subtle px-6 py-3">
