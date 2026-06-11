@@ -18,7 +18,6 @@ export interface State {
   contractPhone: string;
   contractSent: boolean;
   contractSigned: boolean;
-  infoSaved: boolean;
   modal: ModalType;
   toast: boolean;
   config: { subdomain: string; phones: string[] };
@@ -30,7 +29,6 @@ const initialState: State = {
   contractPhone: '',
   contractSent: false,
   contractSigned: false,
-  infoSaved: false,
   modal: null,
   toast: false,
   config: {
@@ -58,7 +56,6 @@ export type Action =
   | { type: 'SET_CONTRACT_PHONE'; value: string }
   | { type: 'SUBMIT_CONTRACT' }
   | { type: 'CHECK_CONTRACT_STATUS' }
-  | { type: 'SAVE_INFO' }
   | { type: 'SEND_TO_MODERATION' };
 
 function reducer(state: State, action: Action): State {
@@ -123,8 +120,6 @@ function reducer(state: State, action: Action): State {
       return { ...state, contractSent: true };
     case 'CHECK_CONTRACT_STATUS':
       return { ...state, contractSigned: true };
-    case 'SAVE_INFO':
-      return { ...state, infoSaved: true };
     case 'SEND_TO_MODERATION':
       return { ...state, modal: 'congratulations' };
     default:

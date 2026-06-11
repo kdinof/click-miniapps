@@ -13,7 +13,7 @@ import { CongratulationsModal } from '@/screens/CongratulationsModal';
 import { Register } from '@/screens/Register';
 import { CreateApp } from '@/screens/CreateApp';
 import { DashboardProvider, useDashboard, type State, type Tab } from '@/state/dashboard';
-import { InfoFormProvider } from '@/state/infoForm';
+import { InfoFormProvider, useInfoForm, isInfoFormComplete } from '@/state/infoForm';
 
 const STEP_LABELS = [
   'Доступ\nк sandbox',
@@ -29,8 +29,8 @@ const TABS = [
   { key: 'info', label: 'Общая информация' },
 ];
 
-function getStatuses(state: State): StepStatus[] {
-  const { dev, config, contractPhone, contractSent, infoSaved, tab } = state;
+function getStatuses(state: State, infoComplete: boolean): StepStatus[] {
+  const { dev, config, contractPhone, contractSent, tab } = state;
 
   const sandbox: StepStatus = 'done';
 
@@ -49,7 +49,7 @@ function getStatuses(state: State): StepStatus[] {
       ? 'current'
       : 'pending';
 
-  const info: StepStatus = infoSaved
+  const info: StepStatus = infoComplete
     ? 'done'
     : tab === 'info'
       ? 'current'
@@ -60,8 +60,10 @@ function getStatuses(state: State): StepStatus[] {
 
 function Dashboard({ appName }: { appName: string }) {
   const { state, dispatch } = useDashboard();
-  const steps = STEP_LABELS.map((label, i) => ({ label, status: getStatuses(state)[i] }));
-  const canModerate = state.infoSaved && state.contractSigned;
+  const { form } = useInfoForm();
+  const infoComplete = isInfoFormComplete(form);
+  const steps = STEP_LABELS.map((label, i) => ({ label, status: getStatuses(state, infoComplete)[i] }));
+  const canModerate = infoComplete && state.contractSigned;
 
   const [ready, setReady] = useState(false);
   useEffect(() => {
