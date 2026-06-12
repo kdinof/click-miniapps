@@ -354,7 +354,6 @@ export function DevTab({ appName }: { appName: string }) {
           </div>
           <TokenCard variant={tokenVariant} />
           {state.dev === 'tokenGenerated' && <LaunchBlock />}
-          <InfoBanner />
         </>
       )}
     </div>
