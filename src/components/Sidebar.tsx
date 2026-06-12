@@ -1,4 +1,26 @@
 import type { ReactNode } from 'react';
+
+export type TabStatus = 'empty' | 'progress' | 'done';
+
+function StatusDot({ status }: { status: TabStatus }) {
+  if (status === 'done') {
+    return (
+      <div className="flex size-4 shrink-0 items-center justify-center rounded-full bg-green-500">
+        <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+          <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+    );
+  }
+  if (status === 'progress') {
+    return (
+      <div className="flex size-4 shrink-0 items-center justify-center rounded-full border-2 border-white/60">
+        <div className="size-1.5 rounded-full bg-white/60" />
+      </div>
+    );
+  }
+  return <div className="size-4 shrink-0 rounded-full border border-white/30" />;
+}
 import {
   ChevronDown,
   Globe,
@@ -43,10 +65,11 @@ function NavRow({ icon, label, trailing, href }: NavRowProps) {
   return <button className={cls}>{content}</button>;
 }
 
-export function Sidebar({ appName, activeTab, onTabChange }: {
+export function Sidebar({ appName, activeTab, onTabChange, tabStatuses }: {
   appName: string;
   activeTab: string;
   onTabChange: (key: string) => void;
+  tabStatuses: Record<string, TabStatus>;
 }) {
   const iconCls = 'text-text-white';
   return (
@@ -85,13 +108,14 @@ export function Sidebar({ appName, activeTab, onTabChange }: {
               <button
                 key={tab.key}
                 onClick={() => onTabChange(tab.key)}
-                className={`flex w-full items-center rounded-xl py-2.5 pl-[52px] pr-4 text-left text-body-sm transition-colors duration-150 ${
+                className={`flex w-full items-center gap-2 rounded-xl py-2.5 pl-[52px] pr-4 text-left text-body-sm transition-colors duration-150 ${
                   activeTab === tab.key
                     ? 'bg-white/10 font-semibold text-text-white'
                     : 'font-medium text-white/50 hover:bg-white/5 hover:text-white/80'
                 }`}
               >
-                {tab.label}
+                <span className="flex-1">{tab.label}</span>
+                <StatusDot status={tabStatuses[tab.key] ?? 'empty'} />
               </button>
             ))}
           </div>
