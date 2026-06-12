@@ -65,6 +65,10 @@ const initial: InfoFormState = {
   faqs: [{ question: '', answer: '' }],
 };
 
+export function isValidTelegram(v: string): boolean {
+  return /^@[a-zA-Z0-9_]{4,31}$/.test(v.trim());
+}
+
 /** Все обязательные поля «Общей информации» заполнены — управляет доступностью модерации. */
 export function isInfoFormComplete(f: InfoFormState): boolean {
   return (
@@ -72,6 +76,7 @@ export function isInfoFormComplete(f: InfoFormState): boolean {
     f.phone.trim() !== '' &&
     f.businessName.trim() !== '' &&
     f.telegramUser.trim() !== '' &&
+    isValidTelegram(f.telegramUser) &&
     f.nameRU.trim() !== '' &&
     f.nameUZ.trim() !== '' &&
     f.nameENG.trim() !== '' &&
@@ -81,7 +86,12 @@ export function isInfoFormComplete(f: InfoFormState): boolean {
     f.category !== '' &&
     f.regions.length > 0 &&
     f.svgState.status === 'uploaded' &&
-    f.pngState.status === 'uploaded'
+    f.pngState.status === 'uploaded' &&
+    f.faqs.every(faq => {
+      const hasQ = faq.question.trim() !== '';
+      const hasA = faq.answer.trim() !== '';
+      return (hasQ && hasA) || (!hasQ && !hasA);
+    })
   );
 }
 

@@ -1,19 +1,20 @@
 import { useState, useEffect } from 'react';
 import { Sidebar } from '@/components/Sidebar';
 import { Stepper, type StepStatus } from '@/components/Stepper';
-import { Tabs } from '@/components/Tabs';
 import { Button } from '@/components/Button';
 import { Toast } from '@/components/Toast';
 import { DevTab } from '@/screens/DevTab';
 import { ContractTab } from '@/screens/ContractTab';
 import { InfoTab } from '@/screens/InfoTab';
+import { SupportTab } from '@/screens/SupportTab';
 import { SuccessModal } from '@/screens/SuccessModal';
 import { OptionsModal } from '@/screens/OptionsModal';
 import { CongratulationsModal } from '@/screens/CongratulationsModal';
 import { Register } from '@/screens/Register';
 import { CreateApp } from '@/screens/CreateApp';
 import { DashboardProvider, useDashboard, type State, type Tab } from '@/state/dashboard';
-import { InfoFormProvider, useInfoForm, isInfoFormComplete } from '@/state/infoForm';
+import { InfoFormProvider, useInfoForm, isInfoFormComplete, isValidTelegram, type InfoFormState } from '@/state/infoForm';
+import type { TabStatus } from '@/components/Sidebar';
 
 const STEP_LABELS = [
   'Доступ\nк sandbox',
@@ -23,11 +24,37 @@ const STEP_LABELS = [
   'Модерация\n/ Релиз',
 ];
 
-const TABS = [
-  { key: 'dev', label: 'Для разработчиков' },
-  { key: 'contract', label: 'Подписание договора' },
-  { key: 'info', label: 'Общая информация' },
-];
+
+function getTabStatuses(state: State, form: InfoFormState): Record<string, TabStatus> {
+  const dev: TabStatus =
+    state.dev === 'configured' ? 'done' :
+    state.dev !== 'initial' ? 'progress' : 'empty';
+
+  const contract: TabStatus =
+    state.contractSigned ? 'done' :
+    state.contractPhone.trim() !== '' || state.contractSent ? 'progress' : 'empty';
+
+  const infoAnyFilled =
+    [form.name, form.phone, form.nameRU, form.nameUZ, form.nameENG, form.descRU].some(v => v.trim() !== '') ||
+    form.category !== '' || form.regions.length > 0 ||
+    form.svgState.status !== 'idle' || form.pngState.status !== 'idle';
+  const infoDone =
+    form.name.trim() !== '' && form.phone.trim() !== '' &&
+    form.nameRU.trim() !== '' && form.nameUZ.trim() !== '' && form.nameENG.trim() !== '' &&
+    form.descRU.trim() !== '' && form.descUZ.trim() !== '' && form.descENG.trim() !== '' &&
+    form.category !== '' && form.regions.length > 0 &&
+    form.svgState.status === 'uploaded' && form.pngState.status === 'uploaded';
+  const info: TabStatus = infoDone ? 'done' : infoAnyFilled ? 'progress' : 'empty';
+
+  const supportAnyFilled =
+    form.businessName.trim() !== '' || form.telegramUser.trim() !== '' ||
+    form.supportContact.trim() !== '' ||
+    form.faqs.some(f => f.question.trim() !== '' || f.answer.trim() !== '');
+  const supportDone = form.businessName.trim() !== '' && isValidTelegram(form.telegramUser);
+  const support: TabStatus = supportDone ? 'done' : supportAnyFilled ? 'progress' : 'empty';
+
+  return { dev, contract, info, support };
+}
 
 function getStatuses(state: State, infoComplete: boolean): StepStatus[] {
   const { dev, config, contractPhone, contractSent, tab } = state;
@@ -73,14 +100,19 @@ function Dashboard({ appName }: { appName: string }) {
 
   return (
     <div className="flex h-screen overflow-hidden bg-bg-sidebar">
-      <Sidebar appName={appName} />
+      <Sidebar
+        appName={appName}
+        activeTab={state.tab}
+        onTabChange={(k) => dispatch({ type: 'SET_TAB', tab: k as Tab })}
+        tabStatuses={getTabStatuses(state, form)}
+      />
       <main className="flex-1 py-4 pr-4">
         <div className="h-full overflow-auto rounded-island bg-bg-light-blue">
           {ready && (
           <div className="mx-auto flex w-[1000px] max-w-full flex-col pt-12 pb-12 animate-fade-in">
             <div className="flex items-center justify-between">
               <h1 className="text-[48px] leading-[48px] font-semibold text-text-primary">
-                Новый МиниАпп
+                {appName}
               </h1>
               <Button
                 variant={canModerate ? 'primary' : 'secondary'}
@@ -96,15 +128,11 @@ function Dashboard({ appName }: { appName: string }) {
               <Stepper steps={steps} />
             </div>
 
-            <div className="mt-[60px] flex flex-col gap-5">
-              <Tabs
-                tabs={TABS}
-                active={state.tab}
-                onChange={(k) => dispatch({ type: 'SET_TAB', tab: k as Tab })}
-              />
-              {state.tab === 'dev' && <DevTab />}
+            <div className="mt-10 flex flex-col gap-5">
+              {state.tab === 'dev' && <DevTab appName={appName} />}
               {state.tab === 'contract' && <ContractTab />}
               {state.tab === 'info' && <InfoTab />}
+              {state.tab === 'support' && <SupportTab />}
             </div>
           </div>
           )}

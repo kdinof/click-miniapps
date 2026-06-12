@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Sparkles,
   FileText,
@@ -44,7 +45,7 @@ function TokenCard({ variant }: { variant: 'initial' | 'generated' | 'masked' })
 
         {variant === 'initial' ? (
           <Button className="w-[235px]" onClick={() => dispatch({ type: 'GENERATE_TOKEN' })}>
-            Сгенерировать
+            Сгенерировать токен
           </Button>
         ) : (
           <div className="w-full">
@@ -133,10 +134,18 @@ function InfoBanner() {
   );
 }
 
+function isValidUrl(v: string): boolean {
+  if (!v.trim().startsWith('https://')) return false;
+  try { new URL(v.trim()); return true; } catch { return false; }
+}
+
 /* ----------------------------- Config page ------------------------------ */
 function ConfigPage() {
   const { state, dispatch } = useDashboard();
   const { subdomain, phones } = state.config;
+  const [subdomainTouched, setSubdomainTouched] = useState(false);
+
+  const subdomainError = subdomainTouched && subdomain !== '' && !isValidUrl(subdomain);
 
   return (
     <div className="flex flex-col gap-6 rounded-island bg-bg-island p-9">
@@ -156,7 +165,7 @@ function ConfigPage() {
             App в Click SuperApp.
           </p>
         </div>
-        <Button className="w-[235px]" onClick={() => dispatch({ type: 'LAUNCH' })}>
+        <Button className="w-[235px]" disabled={!isValidUrl(subdomain)} onClick={() => dispatch({ type: 'LAUNCH' })}>
           Запустить МиниАпп
         </Button>
       </div>
@@ -173,6 +182,9 @@ function ConfigPage() {
           placeholder="https://www.sabdomenov.net/..."
           value={subdomain}
           onChange={(v) => dispatch({ type: 'SET_SUBDOMAIN', value: v })}
+          onBlur={() => setSubdomainTouched(true)}
+          error={subdomainError}
+          helper={subdomainError ? 'Введите полный URL с https://' : undefined}
         />
       </div>
 
@@ -249,7 +261,7 @@ function formatUserName(fullName: string): string {
   return `${firstName} ${lastInitial}.`;
 }
 
-function AvailabilityBlock() {
+function AvailabilityBlock({ appName }: { appName: string }) {
   return (
     <div className="flex gap-6 overflow-hidden rounded-island bg-bg-island p-6">
       <div className="flex flex-1 flex-col gap-5">
@@ -262,9 +274,9 @@ function AvailabilityBlock() {
         </div>
         <TextField
           label="Название МиниАппа"
-          value="Safia Work"
+          value={appName}
           readOnly
-          trailing={<CopyButton value="Safia Work" />}
+          trailing={<CopyButton value={appName} />}
         />
         <TextField
           label="Диплинк (по диплинку можете попасть в свой тестовый МиниАпп)"
@@ -315,7 +327,7 @@ function AvailableUsersTable() {
 }
 
 /* ------------------------------- DevTab --------------------------------- */
-export function DevTab() {
+export function DevTab({ appName }: { appName: string }) {
   const { state } = useDashboard();
 
   if (state.dev === 'configuring') return <ConfigPage />;
@@ -328,7 +340,7 @@ export function DevTab() {
       {state.dev === 'configured' ? (
         <>
           <TokenCard variant={tokenVariant} />
-          <AvailabilityBlock />
+          <AvailabilityBlock appName={appName} />
           <AvailableUsersTable />
         </>
       ) : (
@@ -337,12 +349,10 @@ export function DevTab() {
             <h2 className="text-h2 text-text-primary">Создайте миниапп и настройте интеграции</h2>
             <div className="flex items-stretch gap-2">
               <SandboxCard />
-              <AICard />
             </div>
           </div>
           <TokenCard variant={tokenVariant} />
           {state.dev === 'tokenGenerated' && <LaunchBlock />}
-          <InfoBanner />
         </>
       )}
     </div>

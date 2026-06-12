@@ -27,9 +27,16 @@ function GoogleLogo() {
   );
 }
 
+function isValidEmail(v: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+}
+
 export function Register({ onContinue }: { onContinue: () => void }) {
   const [accepted, setAccepted] = useState(false);
   const [email, setEmail] = useState('');
+  const [emailTouched, setEmailTouched] = useState(false);
+
+  const emailError = emailTouched && email !== '' && !isValidEmail(email);
 
   return (
     <OnboardingLayout>
@@ -65,7 +72,14 @@ export function Register({ onContinue }: { onContinue: () => void }) {
           </div>
 
           {/* Email */}
-          <TextField placeholder="Введите ваш email" value={email} onChange={setEmail} />
+          <TextField
+            placeholder="Введите ваш email"
+            value={email}
+            onChange={setEmail}
+            onBlur={() => setEmailTouched(true)}
+            error={emailError}
+            helper={emailError ? 'Введите корректный email' : undefined}
+          />
 
           {/* Согласие */}
           <div className="flex w-full flex-col items-center rounded-island bg-bg-island p-4">
@@ -87,7 +101,7 @@ export function Register({ onContinue }: { onContinue: () => void }) {
           </div>
 
           {/* Войти */}
-          <Button className="w-full" disabled={!accepted} onClick={onContinue}>
+          <Button className="w-full" disabled={!accepted || !isValidEmail(email)} onClick={onContinue}>
             Войти
           </Button>
         </div>

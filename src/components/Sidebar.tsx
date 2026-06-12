@@ -1,8 +1,28 @@
 import type { ReactNode } from 'react';
+
+export type TabStatus = 'empty' | 'progress' | 'done';
+
+function StatusDot({ status }: { status: TabStatus }) {
+  if (status === 'done') {
+    return (
+      <div className="flex size-4 shrink-0 items-center justify-center rounded-full bg-green-500">
+        <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+          <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+    );
+  }
+  if (status === 'progress') {
+    return (
+      <div className="flex size-4 shrink-0 items-center justify-center rounded-full border-2 border-white/60">
+        <div className="size-1.5 rounded-full bg-white/60" />
+      </div>
+    );
+  }
+  return <div className="size-4 shrink-0 rounded-full border border-white/30" />;
+}
 import {
   ChevronDown,
-  LayoutGrid,
-  User,
   Globe,
   File,
   FileText,
@@ -10,6 +30,13 @@ import {
   LogOut,
 } from 'lucide-react';
 import { DEVELOPER_DOCS_URL } from '@/lib/links';
+
+const NAV_TABS = [
+  { key: 'dev', label: 'Для разработчиков' },
+  { key: 'contract', label: 'Подписание договора' },
+  { key: 'info', label: 'Общая информация' },
+  { key: 'support', label: 'Поддержка пользователей' },
+];
 
 interface NavRowProps {
   icon: ReactNode;
@@ -38,7 +65,12 @@ function NavRow({ icon, label, trailing, href }: NavRowProps) {
   return <button className={cls}>{content}</button>;
 }
 
-export function Sidebar({ appName }: { appName: string }) {
+export function Sidebar({ appName, activeTab, onTabChange, tabStatuses }: {
+  appName: string;
+  activeTab: string;
+  onTabChange: (key: string) => void;
+  tabStatuses: Record<string, TabStatus>;
+}) {
   const iconCls = 'text-text-white';
   return (
     <aside className="flex h-screen w-[248px] shrink-0 flex-col bg-bg-sidebar px-2 py-6">
@@ -54,8 +86,8 @@ export function Sidebar({ appName }: { appName: string }) {
         />
       </div>
 
-      <div className="flex flex-1 flex-col justify-between">
-        <div className="flex flex-col gap-3">
+      <div className="flex flex-1 flex-col justify-between overflow-hidden">
+        <div className="flex flex-col gap-1 overflow-y-auto">
           <NavRow
             icon={
               <img
@@ -70,9 +102,22 @@ export function Sidebar({ appName }: { appName: string }) {
             label={appName}
             trailing={<ChevronDown size={24} className="text-text-white" />}
           />
-          <div className="flex flex-col gap-3">
-            <NavRow icon={<LayoutGrid size={24} className={iconCls} />} label="Mini-App" />
-            <NavRow icon={<User size={24} className={iconCls} />} label="Участники" />
+
+          <div className="flex flex-col gap-0.5 pt-1">
+            {NAV_TABS.map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => onTabChange(tab.key)}
+                className={`flex w-full items-center gap-2 rounded-xl py-2.5 pl-[52px] pr-4 text-left text-body-sm transition-colors duration-150 ${
+                  activeTab === tab.key
+                    ? 'bg-white/10 font-semibold text-text-white'
+                    : 'font-medium text-white/50 hover:bg-white/5 hover:text-white/80'
+                }`}
+              >
+                <StatusDot status={tabStatuses[tab.key] ?? 'empty'} />
+                <span className="flex-1">{tab.label}</span>
+              </button>
+            ))}
           </div>
         </div>
 
