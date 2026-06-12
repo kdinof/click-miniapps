@@ -45,7 +45,7 @@ function TokenCard({ variant }: { variant: 'initial' | 'generated' | 'masked' })
 
         {variant === 'initial' ? (
           <Button className="w-[235px]" onClick={() => dispatch({ type: 'GENERATE_TOKEN' })}>
-            Сгенерировать
+            Сгенерировать токен
           </Button>
         ) : (
           <div className="w-full">
