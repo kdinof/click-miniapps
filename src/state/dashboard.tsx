@@ -8,7 +8,7 @@ import {
 
 export const TOKEN_LINK = 'https://miniapps/app1234567#screen=profile&ref=99';
 
-export type Tab = 'dev' | 'contract' | 'info';
+export type Tab = 'dev' | 'contract' | 'info' | 'support';
 export type DevState = 'initial' | 'tokenGenerated' | 'configuring' | 'configured';
 export type ModalType = null | 'success' | 'options' | 'congratulations';
 

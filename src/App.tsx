@@ -7,6 +7,7 @@ import { Toast } from '@/components/Toast';
 import { DevTab } from '@/screens/DevTab';
 import { ContractTab } from '@/screens/ContractTab';
 import { InfoTab } from '@/screens/InfoTab';
+import { SupportTab } from '@/screens/SupportTab';
 import { SuccessModal } from '@/screens/SuccessModal';
 import { OptionsModal } from '@/screens/OptionsModal';
 import { CongratulationsModal } from '@/screens/CongratulationsModal';
@@ -27,6 +28,7 @@ const TABS = [
   { key: 'dev', label: 'Для разработчиков' },
   { key: 'contract', label: 'Подписание договора' },
   { key: 'info', label: 'Общая информация' },
+  { key: 'support', label: 'Поддержка пользователей' },
 ];
 
 function getStatuses(state: State, infoComplete: boolean): StepStatus[] {
@@ -105,6 +107,7 @@ function Dashboard({ appName }: { appName: string }) {
               {state.tab === 'dev' && <DevTab appName={appName} />}
               {state.tab === 'contract' && <ContractTab />}
               {state.tab === 'info' && <InfoTab />}
+              {state.tab === 'support' && <SupportTab />}
             </div>
           </div>
           )}
