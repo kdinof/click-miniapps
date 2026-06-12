@@ -80,7 +80,7 @@ function Dashboard({ appName }: { appName: string }) {
           <div className="mx-auto flex w-[1000px] max-w-full flex-col pt-12 pb-12 animate-fade-in">
             <div className="flex items-center justify-between">
               <h1 className="text-[48px] leading-[48px] font-semibold text-text-primary">
-                Новый МиниАпп
+                {appName}
               </h1>
               <Button
                 variant={canModerate ? 'primary' : 'secondary'}
@@ -102,7 +102,7 @@ function Dashboard({ appName }: { appName: string }) {
                 active={state.tab}
                 onChange={(k) => dispatch({ type: 'SET_TAB', tab: k as Tab })}
               />
-              {state.tab === 'dev' && <DevTab />}
+              {state.tab === 'dev' && <DevTab appName={appName} />}
               {state.tab === 'contract' && <ContractTab />}
               {state.tab === 'info' && <InfoTab />}
             </div>

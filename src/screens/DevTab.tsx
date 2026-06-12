@@ -261,7 +261,7 @@ function formatUserName(fullName: string): string {
   return `${firstName} ${lastInitial}.`;
 }
 
-function AvailabilityBlock() {
+function AvailabilityBlock({ appName }: { appName: string }) {
   return (
     <div className="flex gap-6 overflow-hidden rounded-island bg-bg-island p-6">
       <div className="flex flex-1 flex-col gap-5">
@@ -274,9 +274,9 @@ function AvailabilityBlock() {
         </div>
         <TextField
           label="Название МиниАппа"
-          value="Safia Work"
+          value={appName}
           readOnly
-          trailing={<CopyButton value="Safia Work" />}
+          trailing={<CopyButton value={appName} />}
         />
         <TextField
           label="Диплинк (по диплинку можете попасть в свой тестовый МиниАпп)"
@@ -327,7 +327,7 @@ function AvailableUsersTable() {
 }
 
 /* ------------------------------- DevTab --------------------------------- */
-export function DevTab() {
+export function DevTab({ appName }: { appName: string }) {
   const { state } = useDashboard();
 
   if (state.dev === 'configuring') return <ConfigPage />;
@@ -340,7 +340,7 @@ export function DevTab() {
       {state.dev === 'configured' ? (
         <>
           <TokenCard variant={tokenVariant} />
-          <AvailabilityBlock />
+          <AvailabilityBlock appName={appName} />
           <AvailableUsersTable />
         </>
       ) : (
