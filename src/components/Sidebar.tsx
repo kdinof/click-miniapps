@@ -114,8 +114,8 @@ export function Sidebar({ appName, activeTab, onTabChange, tabStatuses }: {
                     : 'font-medium text-white/50 hover:bg-white/5 hover:text-white/80'
                 }`}
               >
-                <span className="flex-1">{tab.label}</span>
                 <StatusDot status={tabStatuses[tab.key] ?? 'empty'} />
+                <span className="flex-1">{tab.label}</span>
               </button>
             ))}
           </div>
