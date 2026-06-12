@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import {
-  Sparkles,
   FileText,
   Rocket,
   ChevronLeft,
@@ -100,39 +99,6 @@ function SandboxCard() {
   );
 }
 
-function AICard() {
-  const { dispatch } = useDashboard();
-  return (
-    <button type="button" onClick={() => dispatch({ type: 'OPEN_OPTIONS' })} className="flex flex-1 cursor-pointer flex-col gap-5 rounded-island bg-bg-island p-6 text-left transition-colors hover:bg-[#EBF0F5] active:bg-[#EBF0F5]">
-      <div className="flex flex-col gap-1">
-        <div>
-          <Badge variant="violet" icon={<Sparkles size={12} />}>
-            AI генерация приложений
-          </Badge>
-        </div>
-        <h3 className="text-body font-semibold text-text-primary">Нет приложения?</h3>
-        <p className="text-body-sm text-text-secondary">
-          Создайте Mini App с помощью AI или выберите готовый способ запуска через
-          партнёров и витрину.
-        </p>
-      </div>
-    </button>
-  );
-}
-
-function InfoBanner() {
-  return (
-    <div className="flex items-start gap-4 rounded-island bg-bg-island px-6 py-3">
-      <img src="/assets/info-icon.svg" alt="" className="mt-0.5 size-5 shrink-0" />
-      <div className="flex flex-col">
-        <p className="text-body font-semibold text-text-primary">Убедитесь, что договор подписан</p>
-        <p className="text-body text-text-secondary">
-          Полный запуск станет доступен после подписания договора и прохождения модерации
-        </p>
-      </div>
-    </div>
-  );
-}
 
 function isValidUrl(v: string): boolean {
   if (!v.trim().startsWith('https://')) return false;
