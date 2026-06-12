@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Sparkles,
   FileText,
@@ -133,10 +134,18 @@ function InfoBanner() {
   );
 }
 
+function isValidUrl(v: string): boolean {
+  if (!v.trim().startsWith('https://')) return false;
+  try { new URL(v.trim()); return true; } catch { return false; }
+}
+
 /* ----------------------------- Config page ------------------------------ */
 function ConfigPage() {
   const { state, dispatch } = useDashboard();
   const { subdomain, phones } = state.config;
+  const [subdomainTouched, setSubdomainTouched] = useState(false);
+
+  const subdomainError = subdomainTouched && subdomain !== '' && !isValidUrl(subdomain);
 
   return (
     <div className="flex flex-col gap-6 rounded-island bg-bg-island p-9">
@@ -156,7 +165,7 @@ function ConfigPage() {
             App в Click SuperApp.
           </p>
         </div>
-        <Button className="w-[235px]" onClick={() => dispatch({ type: 'LAUNCH' })}>
+        <Button className="w-[235px]" disabled={!isValidUrl(subdomain)} onClick={() => dispatch({ type: 'LAUNCH' })}>
           Запустить МиниАпп
         </Button>
       </div>
@@ -173,6 +182,9 @@ function ConfigPage() {
           placeholder="https://www.sabdomenov.net/..."
           value={subdomain}
           onChange={(v) => dispatch({ type: 'SET_SUBDOMAIN', value: v })}
+          onBlur={() => setSubdomainTouched(true)}
+          error={subdomainError}
+          helper={subdomainError ? 'Введите полный URL с https://' : undefined}
         />
       </div>
 

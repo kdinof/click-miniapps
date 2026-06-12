@@ -5,7 +5,7 @@ import { TextField } from '@/components/TextField';
 import { Select } from '@/components/Select';
 import { MultiSelect } from '@/components/MultiSelect';
 import { Switch } from '@/components/Switch';
-import { useInfoForm, type UploadState } from '@/state/infoForm';
+import { useInfoForm, isValidTelegram, type UploadState } from '@/state/infoForm';
 
 function formatSize(bytes: number) {
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} kb`;
@@ -195,6 +195,7 @@ function SectionTitle({ title, sub }: { title: string; sub?: string }) {
 
 export function InfoTab() {
   const { form, set } = useInfoForm();
+  const [telegramTouched, setTelegramTouched] = useState(false);
   const {
     hasCert, name, phone, businessName, telegramUser,
     nameRU, nameUZ, nameENG, descRU, descUZ, descENG,
@@ -290,7 +291,15 @@ export function InfoTab() {
         />
         <div className="grid grid-cols-2 gap-4">
           <TextField label="Название бизнеса" placeholder="Укажите название своего бизнеса" value={businessName} onChange={setBusinessName} />
-          <TextField label="Юзер в телеграмме" placeholder="@telegram_name" value={telegramUser} onChange={setTelegramUser} />
+          <TextField
+            label="Юзер в телеграмме"
+            placeholder="@telegram_name"
+            value={telegramUser}
+            onChange={setTelegramUser}
+            onBlur={() => setTelegramTouched(true)}
+            error={telegramTouched && telegramUser !== '' && !isValidTelegram(telegramUser)}
+            helper={telegramTouched && telegramUser !== '' && !isValidTelegram(telegramUser) ? 'Формат: @username' : undefined}
+          />
         </div>
         <div className="flex items-center justify-between">
           <span className="text-body text-text-primary">
@@ -469,38 +478,45 @@ export function InfoTab() {
           title="FAQs МиниАппа"
           sub="Добавьте самые частые вопросы и ответы, которые помогут клиентам разобраться в вашем сервисе."
         />
-        {faqs.map((faq, i) => (
-          <div key={i} className="flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <p className="text-body font-semibold text-text-primary">Вопрос {i + 1}</p>
-              {faqs.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => removeFaq(i)}
-                  aria-label="Удалить вопрос"
-                  className="flex items-center justify-center rounded-lg p-1 text-text-tertiary transition-colors hover:bg-bg-subtle hover:text-error"
-                >
-                  <Trash2 size={18} />
-                </button>
-              )}
+        {faqs.map((faq, i) => {
+          const questionError = faq.question.trim() === '' && faq.answer.trim() !== '';
+          const answerError = faq.answer.trim() === '' && faq.question.trim() !== '';
+          return (
+            <div key={i} className="flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <p className="text-body font-semibold text-text-primary">Вопрос {i + 1}</p>
+                {faqs.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeFaq(i)}
+                    aria-label="Удалить вопрос"
+                    className="flex items-center justify-center rounded-lg p-1 text-text-tertiary transition-colors hover:bg-bg-subtle hover:text-error"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                )}
+              </div>
+              <TextField
+                label="Вопрос"
+                placeholder="Напишите сам вопрос"
+                value={faq.question}
+                onChange={(v) => updateFaq(i, 'question', v)}
+                error={questionError}
+                helper={questionError ? 'Обязательное поле' : undefined}
+              />
+              <TextField
+                textarea
+                maxLength={400}
+                label="Ответ"
+                placeholder="Напишите решение или ответ на вопрос"
+                value={faq.answer}
+                onChange={(v) => updateFaq(i, 'answer', v)}
+                error={answerError}
+                helper={answerError ? 'Обязательное поле' : 'max: 400'}
+              />
             </div>
-            <TextField
-              label="Вопрос"
-              placeholder="Напишите сам вопрос"
-              value={faq.question}
-              onChange={(v) => updateFaq(i, 'question', v)}
-            />
-            <TextField
-              textarea
-              maxLength={400}
-              label="Ответ"
-              placeholder="Напишите решение или ответ на вопрос"
-              helper="max: 400"
-              value={faq.answer}
-              onChange={(v) => updateFaq(i, 'answer', v)}
-            />
-          </div>
-        ))}
+          );
+        })}
         <button
           type="button"
           onClick={addFaq}

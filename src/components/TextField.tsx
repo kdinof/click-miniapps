@@ -6,6 +6,7 @@ export interface TextFieldProps {
   value?: string;
   placeholder?: string;
   onChange?: (value: string) => void;
+  onBlur?: () => void;
   readOnly?: boolean;
   disabled?: boolean;
   error?: boolean;
@@ -22,6 +23,7 @@ export function TextField({
   value,
   placeholder,
   onChange,
+  onBlur,
   readOnly,
   disabled,
   error,
@@ -53,7 +55,7 @@ export function TextField({
     : 'placeholder:text-text-secondary';
 
   const handleChange = (raw: string) => onChange?.(phone ? formatUzPhone(raw) : raw);
-  const handleBlur = () => phone && setTouched(true);
+  const handleBlur = () => { if (phone) setTouched(true); onBlur?.(); };
 
   const helperContent =
     showError && phone && helper == null ? 'Введите номер целиком' : helper;
