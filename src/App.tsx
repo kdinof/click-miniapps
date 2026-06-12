@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Sidebar } from '@/components/Sidebar';
 import { Stepper, type StepStatus } from '@/components/Stepper';
-import { Tabs } from '@/components/Tabs';
 import { Button } from '@/components/Button';
 import { Toast } from '@/components/Toast';
 import { DevTab } from '@/screens/DevTab';
@@ -24,12 +23,6 @@ const STEP_LABELS = [
   'Модерация\n/ Релиз',
 ];
 
-const TABS = [
-  { key: 'dev', label: 'Для разработчиков' },
-  { key: 'contract', label: 'Подписание договора' },
-  { key: 'info', label: 'Общая информация' },
-  { key: 'support', label: 'Поддержка пользователей' },
-];
 
 function getStatuses(state: State, infoComplete: boolean): StepStatus[] {
   const { dev, config, contractPhone, contractSent, tab } = state;
@@ -75,7 +68,11 @@ function Dashboard({ appName }: { appName: string }) {
 
   return (
     <div className="flex h-screen overflow-hidden bg-bg-sidebar">
-      <Sidebar appName={appName} />
+      <Sidebar
+        appName={appName}
+        activeTab={state.tab}
+        onTabChange={(k) => dispatch({ type: 'SET_TAB', tab: k as Tab })}
+      />
       <main className="flex-1 py-4 pr-4">
         <div className="h-full overflow-auto rounded-island bg-bg-light-blue">
           {ready && (
@@ -98,12 +95,7 @@ function Dashboard({ appName }: { appName: string }) {
               <Stepper steps={steps} />
             </div>
 
-            <div className="mt-[60px] flex flex-col gap-5">
-              <Tabs
-                tabs={TABS}
-                active={state.tab}
-                onChange={(k) => dispatch({ type: 'SET_TAB', tab: k as Tab })}
-              />
+            <div className="mt-10 flex flex-col gap-5">
               {state.tab === 'dev' && <DevTab appName={appName} />}
               {state.tab === 'contract' && <ContractTab />}
               {state.tab === 'info' && <InfoTab />}
