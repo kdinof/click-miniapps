@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Image, AlertCircle, Loader2, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/Button';
 import { TextField } from '@/components/TextField';
@@ -184,11 +184,11 @@ function LogoUploadArea({
   );
 }
 
-function SectionTitle({ title, sub }: { title: string; sub?: string }) {
+function SectionTitle({ title, sub }: { title: string; sub?: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-1">
       <h3 className="text-body font-semibold text-text-primary">{title}</h3>
-      {sub && <p className="text-body-sm text-text-secondary">{sub}</p>}
+      {sub && <div className="text-body-sm text-text-secondary">{sub}</div>}
     </div>
   );
 }
@@ -444,7 +444,12 @@ export function InfoTab() {
       <div className="flex flex-col gap-4">
         <SectionTitle
           title="Поддержка пользователей"
-          sub="Подготовьте данные для колл-центра – мы обучим команду и поможем с обращениями."
+          sub={
+            <div className="flex flex-col gap-2">
+              <p>Click заботится о своих клиентах, поэтому мы стремимся, чтобы поддержка в вашем мини-аппе была на том же высоком уровне, что и в Click SuperApp.</p>
+              <p>Для этого подготовьте данные для нашего колл-центра. Мы обучим команду, и в случае обращений сможем оперативно помочь или перенаправить звонок в вашу службу поддержки.</p>
+            </div>
+          }
         />
         <TextField
           label="Укажите контакт поддержки"
