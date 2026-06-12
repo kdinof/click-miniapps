@@ -70,10 +70,6 @@ export function Sidebar({ appName }: { appName: string }) {
             label={appName}
             trailing={<ChevronDown size={24} className="text-text-white" />}
           />
-          <div className="flex flex-col gap-3">
-            <NavRow icon={<LayoutGrid size={24} className={iconCls} />} label="Mini-App" />
-            <NavRow icon={<User size={24} className={iconCls} />} label="Участники" />
-          </div>
         </div>
 
         <div className="flex flex-col gap-1">
