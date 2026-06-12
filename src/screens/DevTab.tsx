@@ -349,7 +349,6 @@ export function DevTab({ appName }: { appName: string }) {
             <h2 className="text-h2 text-text-primary">Создайте миниапп и настройте интеграции</h2>
             <div className="flex items-stretch gap-2">
               <SandboxCard />
-              <AICard />
             </div>
           </div>
           <TokenCard variant={tokenVariant} />
